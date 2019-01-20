@@ -3,7 +3,7 @@ Create "out" folder
 Pull down "Detailed Account Transaction Report" and save as .csv:
 - change titles to `code	account	Date	Type	Transaction	Reference	Gross	Sales Tax	Net	Sales Tax Rate	Sales Tax Name	Fund	Department`
 
-Pull down "Contacts":
+Pull down "Expenses by Contact" (Date 2018, period: 12 months, compare with 0):
 - add headers as: `name amount items`
 
 Add them both to the input folder
