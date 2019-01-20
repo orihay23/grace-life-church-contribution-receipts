@@ -35,7 +35,11 @@ async function run() {
         }
     });
     const first = contacts[0];
+    first.total = _.sumBy(first.items, (item) => {
+        return parseFloat(item.Gross);
+    });
     const doc = await utils.loadTemplate(path.resolve(__dirname, '2018 Giving ReceiptsPg2.docx'));
+
     doc.setData({
         name: first.name,
         items: first.items,
