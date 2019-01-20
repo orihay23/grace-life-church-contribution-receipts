@@ -34,19 +34,21 @@ async function run() {
             }
         }
     });
-    const first = contacts[0];
-    first.total = _.sumBy(first.items, (item) => {
-        return parseFloat(item.Gross);
+    contacts.forEach(async (contact) => {
+        contact.total = _.sumBy(contact.items, (item) => {
+            return parseFloat(item.Gross);
+        });
+        const doc = await utils.loadTemplate(path.resolve(__dirname, '2018 Giving ReceiptsPg2.docx'));
+    
+        doc.setData({
+            name: contact.name,
+            items: contact.items,
+            total: contact.total,
+        });
+        await utils.writeDocPg2(doc, contact.name);
     });
-    const doc = await utils.loadTemplate(path.resolve(__dirname, '2018 Giving ReceiptsPg2.docx'));
 
-    doc.setData({
-        name: first.name,
-        items: first.items,
-        total: first.total,
-    });
-    await utils.writeDocPg2(doc, first.name);
-    //console.log(first);
+    //console.log(contact);
 }
 
 run();
