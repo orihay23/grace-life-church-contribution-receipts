@@ -1,6 +1,6 @@
 var utils = require('./utils');
 const path = require('path');
-const csvFilePath = path.resolve(__dirname, 'contacts2018.csv');
+const csvFilePath = path.resolve(__dirname, 'input', 'contacts2018.csv');
 
 async function run() {
     const contacts = await utils.read(csvFilePath);
