@@ -10,5 +10,4 @@ Add them both to the input folder
 
 Run instructions:
 `npm install`
-`node index.js`
 `node readTransactions.js`

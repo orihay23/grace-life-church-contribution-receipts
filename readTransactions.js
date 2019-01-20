@@ -39,14 +39,19 @@ async function run() {
             return parseFloat(item.Gross);
         });
         if (contact.total >= 75) {
-            const doc = await utils.loadTemplate(path.resolve(__dirname, '2018 Giving ReceiptsPg2.docx'));
-        
+            const doc = await utils.loadTemplate(path.resolve(__dirname, '2018 Giving Receipts.docx'));
             doc.setData({
+                name: contact.name,
+            });
+            await utils.writeDoc(doc, contact.name);
+            const doc2 = await utils.loadTemplate(path.resolve(__dirname, '2018 Giving ReceiptsPg2.docx'));
+        
+            doc2.setData({
                 name: contact.name,
                 items: contact.items,
                 total: contact.total,
             });
-            await utils.writeDocPg2(doc, contact.name);
+            await utils.writeDocPg2(doc2, contact.name);
         }
     });
 
