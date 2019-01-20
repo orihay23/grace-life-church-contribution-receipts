@@ -7,3 +7,8 @@ Pull down "Expenses by Contact" (Date 2018, period: 12 months, compare with 0):
 - add headers as: `name amount items`
 
 Add them both to the input folder
+
+Run instructions:
+`npm install`
+`node index.js`
+`node readTransactions.js`
