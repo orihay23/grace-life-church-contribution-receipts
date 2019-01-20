@@ -7,6 +7,7 @@ async function run() {
     const promises = [];
     contacts.forEach(async (contact) => {
         if (parseFloat(contact.amount) >= 75) {
+            // console.log(contact.name);
             const doc = await utils.loadTemplate(path.resolve(__dirname, '2018 Giving Receipts.docx'));
             doc.setData({
                 name: contact.name,

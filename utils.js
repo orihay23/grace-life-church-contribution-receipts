@@ -40,7 +40,7 @@ async function writeDoc(doc, name) {
     
     // buf is a nodejs buffer, you can either write it to a file or do anything else with it.
     // console.log(path.resolve(__dirname, 'out', `GLC_Contribution_Receipt_2019_${name}.docx`));
-    fs.writeFileSync(path.resolve(__dirname, 'out', `GLC_Contribution_Receipt_2019_pg2_${name}.docx`), buf);
+    fs.writeFileSync(path.resolve(__dirname, 'out', `GLC_Contribution_Receipt_2019_${name}.docx`), buf);
 }
 
 async function writeDocPg2(doc, name) {
