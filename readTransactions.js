@@ -43,11 +43,10 @@ async function run() {
     doc.setData({
         name: first.name,
         items: first.items,
-        fund: first.Fund,
-        fund: first.Gross,
+        total: first.total,
     });
     await utils.writeDocPg2(doc, first.name);
-    console.log(first);
+    //console.log(first);
 }
 
 run();
