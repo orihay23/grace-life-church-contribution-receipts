@@ -38,14 +38,16 @@ async function run() {
         contact.total = _.sumBy(contact.items, (item) => {
             return parseFloat(item.Gross);
         });
-        const doc = await utils.loadTemplate(path.resolve(__dirname, '2018 Giving ReceiptsPg2.docx'));
-    
-        doc.setData({
-            name: contact.name,
-            items: contact.items,
-            total: contact.total,
-        });
-        await utils.writeDocPg2(doc, contact.name);
+        if (contact.total >= 75) {
+            const doc = await utils.loadTemplate(path.resolve(__dirname, '2018 Giving ReceiptsPg2.docx'));
+        
+            doc.setData({
+                name: contact.name,
+                items: contact.items,
+                total: contact.total,
+            });
+            await utils.writeDocPg2(doc, contact.name);
+        }
     });
 
     //console.log(contact);
