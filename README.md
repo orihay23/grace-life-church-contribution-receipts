@@ -11,3 +11,6 @@ Add them both to the input folder
 Run instructions:
 `npm install`
 `node readTransactions.js`
+
+Notes:
+- make sure there are no `/`s or other similar characters in Transaction or name
