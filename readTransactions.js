@@ -1,7 +1,7 @@
 var utils = require('./utils');
 const path = require('path');
 const csvAccounts = path.resolve(__dirname, 'input', 'accounts.csv');
-const csvFilePath = path.resolve(__dirname, 'input', 'contacts2018.csv');
+const csvFilePath = path.resolve(__dirname, 'input', 'contacts2019.csv');
 const _ = require('lodash');
 
 const deductibleCodes = [
@@ -21,7 +21,6 @@ const deductibleCodes = [
 async function run() {
     const contacts = await utils.read(csvFilePath);
     const accounts = await utils.read(csvAccounts);
-    // console.log(accounts[0]);
     accounts.forEach((account) => {
         if (_.includes(deductibleCodes, account.code)) {
             account.name = _.split(account.Transaction, ' - ')[0];
@@ -39,12 +38,12 @@ async function run() {
             return parseFloat(item.Gross);
         });
         if (contact.total >= 75) {
-            const doc = await utils.loadTemplate(path.resolve(__dirname, '2018 Giving Receipts.docx'));
+            const doc = await utils.loadTemplate(path.resolve(__dirname, '2019 Giving Receipts.docx'));
             doc.setData({
                 name: contact.name,
             });
             await utils.writeDoc(doc, contact.name);
-            const doc2 = await utils.loadTemplate(path.resolve(__dirname, '2018 Giving ReceiptsPg2.docx'));
+            const doc2 = await utils.loadTemplate(path.resolve(__dirname, '2019 Giving ReceiptsPg2.docx'));
         
             doc2.setData({
                 name: contact.name,

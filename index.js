@@ -1,13 +1,13 @@
 var utils = require('./utils');
 const path = require('path');
-const csvFilePath = path.resolve(__dirname, 'input', 'contacts2018.csv');
+const csvFilePath = path.resolve(__dirname, 'input', 'contacts2019.csv');
 
 async function run() {
     const contacts = await utils.read(csvFilePath);
     contacts.forEach(async (contact) => {
         if (parseFloat(contact.amount) >= 75) {
             // console.log(contact.name);
-            const doc = await utils.loadTemplate(path.resolve(__dirname, '2018 Giving Receipts.docx'));
+            const doc = await utils.loadTemplate(path.resolve(__dirname, '2019 Giving Receipts.docx'));
             doc.setData({
                 name: contact.name,
             });

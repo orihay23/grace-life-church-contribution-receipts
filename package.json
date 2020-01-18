@@ -13,6 +13,6 @@
     "docxtemplater": "^3.9.6",
     "jszip": "^2.6.1",
     "jszip-utils": "0.0.2",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.15"
   }
 }
