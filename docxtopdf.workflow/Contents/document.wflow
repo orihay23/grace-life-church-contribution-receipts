@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AMApplicationBuild</key>
+	<string>444.42</string>
+	<key>AMApplicationVersion</key>
+	<string>2.9</string>
+	<key>AMDocumentVersion</key>
+	<string>2</string>
+	<key>actions</key>
+	<array>
+		<dict>
+			<key>action</key>
+			<dict>
+				<key>AMAccepts</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Optional</key>
+					<true/>
+					<key>Types</key>
+					<array>
+						<string>com.apple.cocoa.path</string>
+					</array>
+				</dict>
+				<key>AMActionVersion</key>
+				<string>1.1.2</string>
+				<key>AMApplication</key>
+				<array>
+					<string>Finder</string>
+				</array>
+				<key>AMParameterProperties</key>
+				<dict>
+					<key>fileNames</key>
+					<dict/>
+				</dict>
+				<key>AMProvides</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Types</key>
+					<array>
+						<string>com.apple.cocoa.path</string>
+					</array>
+				</dict>
+				<key>ActionBundlePath</key>
+				<string>/System/Library/Automator/Get Specified Finder Items.action</string>
+				<key>ActionName</key>
+				<string>Get Specified Finder Items</string>
+				<key>ActionParameters</key>
+				<dict>
+					<key>fileNames</key>
+					<array>
+						<string>~/contribution-receipts/out/Jane Huang</string>
+						<string>~/contribution-receipts/out/Jason Lee</string>
+						<string>~/contribution-receipts/out/Jason Zhao</string>
+						<string>~/contribution-receipts/out/Jay and Leslie Kim</string>
+						<string>~/contribution-receipts/out/Jay uy and Lucy Li</string>
+						<string>~/contribution-receipts/out/Jean Hepburn</string>
+						<string>~/contribution-receipts/out/Jeffrey Chu</string>
+						<string>~/contribution-receipts/out/Jennifer Saunders</string>
+						<string>~/contribution-receipts/out/Jenny Chiang</string>
+						<string>~/contribution-receipts/out/Jenny Lee</string>
+						<string>~/contribution-receipts/out/Jessica Sudarta</string>
+						<string>~/contribution-receipts/out/Ji Chung Hsieh</string>
+						<string>~/contribution-receipts/out/Jimmy Olsen</string>
+						<string>~/contribution-receipts/out/Jinchi Wei</string>
+						<string>~/contribution-receipts/out/Jingxue Yu</string>
+						<string>~/contribution-receipts/out/Joanne Oh</string>
+						<string>~/contribution-receipts/out/John and Felicia Yahiro</string>
+						<string>~/contribution-receipts/out/John and Joan Munro</string>
+						<string>~/contribution-receipts/out/John Kim</string>
+						<string>~/contribution-receipts/out/John Michael and Vicki McQuitty</string>
+						<string>~/contribution-receipts/out/John Sukin Kyong Sook Jang and Lydia S Kim</string>
+						<string>~/contribution-receipts/out/Jonathan Kang</string>
+						<string>~/contribution-receipts/out/Joseph Ottaviano</string>
+						<string>~/contribution-receipts/out/Joseph Vargas</string>
+						<string>~/contribution-receipts/out/Joseph Wang</string>
+						<string>~/contribution-receipts/out/Joshua Chi</string>
+						<string>~/contribution-receipts/out/Joshua Garza</string>
+						<string>~/contribution-receipts/out/Joshua Kays</string>
+						<string>~/contribution-receipts/out/Josiah Yiu</string>
+						<string>~/contribution-receipts/out/Jun Ma</string>
+						<string>~/contribution-receipts/out/Kaitlyn Chiu</string>
+						<string>~/contribution-receipts/out/Kathleen Shaibley</string>
+						<string>~/contribution-receipts/out/Kelsey Humphries</string>
+						<string>~/contribution-receipts/out/Kevin Chun</string>
+						<string>~/contribution-receipts/out/Kevin Huang</string>
+						<string>~/contribution-receipts/out/Kristi Dusek</string>
+						<string>~/contribution-receipts/out/Kun B Paek</string>
+						<string>~/contribution-receipts/out/Kun Sub Whang</string>
+						<string>~/contribution-receipts/out/Light Charitable Trust</string>
+						<string>~/contribution-receipts/out/Ligong Zhu and Xiaohui Shen</string>
+						<string>~/contribution-receipts/out/Lin-Fang Zeng and Xi-De Wang</string>
+						<string>~/contribution-receipts/out/Linda Dietch</string>
+						<string>~/contribution-receipts/out/Loose Cash</string>
+						<string>~/contribution-receipts/out/Love Sharang Chung</string>
+						<string>~/contribution-receipts/out/Lu Liu</string>
+						<string>~/contribution-receipts/out/Maki Ishii</string>
+						<string>~/contribution-receipts/out/Maranatha Grace Church</string>
+						<string>~/contribution-receipts/out/Mary Beth Young</string>
+						<string>~/contribution-receipts/out/Matthew Wen</string>
+						<string>~/contribution-receipts/out/Melinda Christie</string>
+						<string>~/contribution-receipts/out/Michael Mow</string>
+						<string>~/contribution-receipts/out/Michael Su</string>
+						<string>~/contribution-receipts/out/Michael Yang</string>
+						<string>~/contribution-receipts/out/Minerva Kim</string>
+						<string>~/contribution-receipts/out/Minyoung Lee</string>
+						<string>~/contribution-receipts/out/Misrak Dabi</string>
+						<string>~/contribution-receipts/out/Mona Beggs</string>
+						<string>~/contribution-receipts/out/Monica Rex</string>
+						<string>~/contribution-receipts/out/Morayo Lawal</string>
+						<string>~/contribution-receipts/out/Myeong Lee</string>
+						<string>~/contribution-receipts/out/Nancy Gibson</string>
+						<string>~/contribution-receipts/out/Nancy Yue</string>
+						<string>~/contribution-receipts/out/Nathan Law</string>
+						<string>~/contribution-receipts/out/Nayoung Lee and Matthew Louie</string>
+						<string>~/contribution-receipts/out/Nicole Niewenhuis</string>
+						<string>~/contribution-receipts/out/Noel and Anastasia De Santos</string>
+						<string>~/contribution-receipts/out/Oluseyi Amele</string>
+						<string>~/contribution-receipts/out/Paul Jeong</string>
+						<string>~/contribution-receipts/out/Paul Miller</string>
+						<string>~/contribution-receipts/out/Paul Sun</string>
+						<string>~/contribution-receipts/out/PayPal Giving Fund</string>
+						<string>~/contribution-receipts/out/Peter Tanaka</string>
+						<string>~/contribution-receipts/out/Peter Yoon and Lydia Yoon</string>
+						<string>~/contribution-receipts/out/Phil and Jenny Yang</string>
+						<string>~/contribution-receipts/out/Phil Yang (philyang@gmail.com)</string>
+						<string>~/contribution-receipts/out/Philip and Johanna Song</string>
+						<string>~/contribution-receipts/out/Priya Parameswaran</string>
+						<string>~/contribution-receipts/out/Qing Lu</string>
+						<string>~/contribution-receipts/out/Randall McDaniel</string>
+						<string>~/contribution-receipts/out/Rebecca Brinton</string>
+						<string>~/contribution-receipts/out/Richard Chang</string>
+						<string>~/contribution-receipts/out/Robert and Lydia Sunnie Kim</string>
+						<string>~/contribution-receipts/out/Robert Shin</string>
+						<string>~/contribution-receipts/out/Robyn Raab</string>
+						<string>~/contribution-receipts/out/Roger and Ann Kim</string>
+						<string>~/contribution-receipts/out/Ronald and Erika Lee</string>
+						<string>~/contribution-receipts/out/Sam Huang</string>
+						<string>~/contribution-receipts/out/Sam Luo</string>
+						<string>~/contribution-receipts/out/Sam Paek</string>
+						<string>~/contribution-receipts/out/Samuel and Christine Yiu</string>
+						<string>~/contribution-receipts/out/Samuel Chung</string>
+						<string>~/contribution-receipts/out/Samuel Trumbo</string>
+						<string>~/contribution-receipts/out/Sarah Huh</string>
+						<string>~/contribution-receipts/out/Sarah Kwon</string>
+						<string>~/contribution-receipts/out/Sarah Y. Choi and James Park</string>
+						<string>~/contribution-receipts/out/Scott and Katarina Tomaszewski</string>
+						<string>~/contribution-receipts/out/Shannon Hoium</string>
+						<string>~/contribution-receipts/out/Sharon Liu</string>
+						<string>~/contribution-receipts/out/Sophia Lou</string>
+						<string>~/contribution-receipts/out/Stacey Kim-Jackson</string>
+						<string>~/contribution-receipts/out/Stanley and Donna Wiseler</string>
+						<string>~/contribution-receipts/out/Stephanie Kuo</string>
+						<string>~/contribution-receipts/out/Steve and Betty Irvin</string>
+						<string>~/contribution-receipts/out/Steve Carlson</string>
+						<string>~/contribution-receipts/out/Sudham S and Iswarya R Saka</string>
+						<string>~/contribution-receipts/out/Sujung Park</string>
+						<string>~/contribution-receipts/out/Sunwoo Kim (Sunny Kim)</string>
+						<string>~/contribution-receipts/out/Sylvia Wong</string>
+						<string>~/contribution-receipts/out/Thomas Olsen</string>
+						<string>~/contribution-receipts/out/Thomas Yuen</string>
+						<string>~/contribution-receipts/out/Tien Ching</string>
+						<string>~/contribution-receipts/out/Tim White</string>
+						<string>~/contribution-receipts/out/Vicki Spivey</string>
+						<string>~/contribution-receipts/out/Victor Lee</string>
+						<string>~/contribution-receipts/out/Victor Lee.</string>
+						<string>~/contribution-receipts/out/Wei Li</string>
+						<string>~/contribution-receipts/out/Wilson Liou</string>
+						<string>~/contribution-receipts/out/Wilson Tsang</string>
+						<string>~/contribution-receipts/out/Wonjoo Chung</string>
+						<string>~/contribution-receipts/out/Xiaoping Luo</string>
+						<string>~/contribution-receipts/out/Yan Whisler</string>
+						<string>~/contribution-receipts/out/Ye S. Han</string>
+						<string>~/contribution-receipts/out/Yeh Cheng</string>
+						<string>~/contribution-receipts/out/Yi Chen</string>
+						<string>~/contribution-receipts/out/Ying Guo</string>
+						<string>~/contribution-receipts/out/Young and Hyun Kim</string>
+						<string>~/contribution-receipts/out/Zoe Ang</string>
+					</array>
+				</dict>
+				<key>BundleIdentifier</key>
+				<string>com.apple.Automator.SpecifiedFiles</string>
+				<key>CFBundleVersion</key>
+				<string>1.1.2</string>
+				<key>CanShowSelectedItemsWhenRun</key>
+				<false/>
+				<key>CanShowWhenRun</key>
+				<true/>
+				<key>Category</key>
+				<array>
+					<string>AMCategoryFilesAndFolders</string>
+				</array>
+				<key>Class Name</key>
+				<string>SpecifiedFilesAction</string>
+				<key>InputUUID</key>
+				<string>F03432B7-5528-4502-949E-10F6075A2ADB</string>
+				<key>Keywords</key>
+				<array>
+					<string>File</string>
+					<string>Choose</string>
+					<string>Find</string>
+					<string>Get</string>
+				</array>
+				<key>OutputUUID</key>
+				<string>B3181594-C0C4-4267-8A92-7F829267AEE5</string>
+				<key>UUID</key>
+				<string>7A9EA7E1-84D4-4234-9C0D-A852DEA445F7</string>
+				<key>UnlocalizedApplications</key>
+				<array>
+					<string>Finder</string>
+				</array>
+				<key>arguments</key>
+				<dict>
+					<key>0</key>
+					<dict>
+						<key>default value</key>
+						<array/>
+						<key>name</key>
+						<string>fileNames</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>0</string>
+					</dict>
+				</dict>
+				<key>conversionLabel</key>
+				<integer>0</integer>
+				<key>isViewVisible</key>
+				<true/>
+				<key>location</key>
+				<string>278.000000:239.000000</string>
+				<key>nibPath</key>
+				<string>/System/Library/Automator/Get Specified Finder Items.action/Contents/Resources/Base.lproj/main.nib</string>
+			</dict>
+			<key>isViewVisible</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>action</key>
+			<dict>
+				<key>AMAccepts</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Optional</key>
+					<false/>
+					<key>Types</key>
+					<array>
+						<string>public.directory</string>
+					</array>
+				</dict>
+				<key>AMActionVersion</key>
+				<string>1.0.2</string>
+				<key>AMApplication</key>
+				<array>
+					<string>Finder</string>
+				</array>
+				<key>AMParameterProperties</key>
+				<dict>
+					<key>recurse</key>
+					<dict/>
+				</dict>
+				<key>AMProvides</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Types</key>
+					<array>
+						<string>com.apple.cocoa.path</string>
+					</array>
+				</dict>
+				<key>AMRequiredResources</key>
+				<array/>
+				<key>ActionBundlePath</key>
+				<string>/System/Library/Automator/Get Folder Contents.action</string>
+				<key>ActionName</key>
+				<string>Get Folder Contents</string>
+				<key>ActionParameters</key>
+				<dict>
+					<key>recurse</key>
+					<false/>
+				</dict>
+				<key>BundleIdentifier</key>
+				<string>com.apple.Automator.GetFolderContents</string>
+				<key>CFBundleVersion</key>
+				<string>1.0.2</string>
+				<key>CanShowSelectedItemsWhenRun</key>
+				<true/>
+				<key>CanShowWhenRun</key>
+				<true/>
+				<key>Category</key>
+				<array>
+					<string>AMCategoryFilesAndFolders</string>
+				</array>
+				<key>Class Name</key>
+				<string>GetFolderContents</string>
+				<key>InputUUID</key>
+				<string>BC133124-A2F9-4451-A755-49C8061A3ECF</string>
+				<key>Keywords</key>
+				<array>
+					<string>File</string>
+					<string>Folder</string>
+				</array>
+				<key>OutputUUID</key>
+				<string>09632684-B408-475B-8DD4-9D85584BFF15</string>
+				<key>UUID</key>
+				<string>D8902B83-46D1-43BD-A2C9-C6F9E56F54CB</string>
+				<key>UnlocalizedApplications</key>
+				<array>
+					<string>Finder</string>
+				</array>
+				<key>arguments</key>
+				<dict>
+					<key>0</key>
+					<dict>
+						<key>default value</key>
+						<false/>
+						<key>name</key>
+						<string>recurse</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>0</string>
+					</dict>
+				</dict>
+				<key>conversionLabel</key>
+				<integer>0</integer>
+				<key>isViewVisible</key>
+				<true/>
+				<key>location</key>
+				<string>278.000000:338.000000</string>
+				<key>nibPath</key>
+				<string>/System/Library/Automator/Get Folder Contents.action/Contents/Resources/Base.lproj/main.nib</string>
+			</dict>
+			<key>isViewVisible</key>
+			<true/>
+		</dict>
+		<dict>
+			<key>action</key>
+			<dict>
+				<key>AMAccepts</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Optional</key>
+					<true/>
+					<key>Types</key>
+					<array>
+						<string>com.apple.applescript.object</string>
+					</array>
+				</dict>
+				<key>AMActionVersion</key>
+				<string>1.0.2</string>
+				<key>AMApplication</key>
+				<array>
+					<string>Automator</string>
+				</array>
+				<key>AMParameterProperties</key>
+				<dict>
+					<key>source</key>
+					<dict/>
+				</dict>
+				<key>AMProvides</key>
+				<dict>
+					<key>Container</key>
+					<string>List</string>
+					<key>Types</key>
+					<array>
+						<string>com.apple.applescript.object</string>
+					</array>
+				</dict>
+				<key>ActionBundlePath</key>
+				<string>/System/Library/Automator/Run AppleScript.action</string>
+				<key>ActionName</key>
+				<string>Run AppleScript</string>
+				<key>ActionParameters</key>
+				<dict>
+					<key>source</key>
+					<string>on run {input, parameters}	tell application id "com.microsoft.Word"		activate		repeat with aFile in input			open aFile			set theOutputPath to ((aFile as text) &amp; ".pdf")			tell active document				save as it file name theOutputPath file format format PDF				close saving no			end tell		end repeat	end tellend run</string>
+				</dict>
+				<key>BundleIdentifier</key>
+				<string>com.apple.Automator.RunScript</string>
+				<key>CFBundleVersion</key>
+				<string>1.0.2</string>
+				<key>CanShowSelectedItemsWhenRun</key>
+				<false/>
+				<key>CanShowWhenRun</key>
+				<true/>
+				<key>Category</key>
+				<array>
+					<string>AMCategoryUtilities</string>
+				</array>
+				<key>Class Name</key>
+				<string>RunScriptAction</string>
+				<key>InputUUID</key>
+				<string>072B871D-5361-4C7D-8EC1-4B14C1522F3F</string>
+				<key>Keywords</key>
+				<array>
+					<string>Run</string>
+				</array>
+				<key>OutputUUID</key>
+				<string>A0573A6B-5BE1-4DCE-B608-E26773F04B28</string>
+				<key>UUID</key>
+				<string>B4117E08-10BF-44D3-BE4E-E4283C63CEDA</string>
+				<key>UnlocalizedApplications</key>
+				<array>
+					<string>Automator</string>
+				</array>
+				<key>arguments</key>
+				<dict>
+					<key>0</key>
+					<dict>
+						<key>default value</key>
+						<string>on run {input, parameters}
+	
+	(* Your script goes here *)
+	
+	return input
+end run</string>
+						<key>name</key>
+						<string>source</string>
+						<key>required</key>
+						<string>0</string>
+						<key>type</key>
+						<string>0</string>
+						<key>uuid</key>
+						<string>0</string>
+					</dict>
+				</dict>
+				<key>conversionLabel</key>
+				<integer>0</integer>
+				<key>isViewVisible</key>
+				<true/>
+				<key>location</key>
+				<string>278.000000:583.000000</string>
+				<key>nibPath</key>
+				<string>/System/Library/Automator/Run AppleScript.action/Contents/Resources/Base.lproj/main.nib</string>
+			</dict>
+			<key>isViewVisible</key>
+			<true/>
+		</dict>
+	</array>
+	<key>connectors</key>
+	<dict>
+		<key>002ABD04-DC9A-44D5-A439-ECA7FC9B4326</key>
+		<dict>
+			<key>from</key>
+			<string>7A9EA7E1-84D4-4234-9C0D-A852DEA445F7 - 7A9EA7E1-84D4-4234-9C0D-A852DEA445F7</string>
+			<key>to</key>
+			<string>D8902B83-46D1-43BD-A2C9-C6F9E56F54CB - D8902B83-46D1-43BD-A2C9-C6F9E56F54CB</string>
+		</dict>
+		<key>33179D33-0B6F-4577-90AD-D3A1C1D02100</key>
+		<dict>
+			<key>from</key>
+			<string>D8902B83-46D1-43BD-A2C9-C6F9E56F54CB - D8902B83-46D1-43BD-A2C9-C6F9E56F54CB</string>
+			<key>to</key>
+			<string>B4117E08-10BF-44D3-BE4E-E4283C63CEDA - B4117E08-10BF-44D3-BE4E-E4283C63CEDA</string>
+		</dict>
+	</dict>
+	<key>workflowMetaData</key>
+	<dict>
+		<key>workflowTypeIdentifier</key>
+		<string>com.apple.Automator.workflow</string>
+	</dict>
+</dict>
+</plist>

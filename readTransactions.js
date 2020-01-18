@@ -12,7 +12,9 @@ const deductibleCodes = [
     '3000',
     '3001',
     '3002',
+    '3003',
     '3004',
+    '3005',
     '4000',
     '4001',
     '5002',
@@ -24,7 +26,9 @@ async function run() {
     accounts.forEach((account) => {
         if (_.includes(deductibleCodes, account.code)) {
             account.name = _.split(account.Transaction, ' - ')[0];
-            const contact = _.find(contacts, { name: account.name });
+            const contact = _.find(contacts, (contact) => { 
+                return contact.name.toLowerCase() === account.name.toLowerCase();
+            });
             if (contact) {
                 if (contact.items === '') {
                     contact.items = [];
