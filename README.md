@@ -5,9 +5,9 @@ Pull down "Detailed Account Transaction Report" and save as `accounts.csv`:
 - make sure Gross is number type, not dollar type
 - sort by date
 
-Pull down "Income by Contact" (Date 2019, period: 12 months, compare with 0):
+Pull down "Income by Contact" (Date 2020, period: 12 months, compare with 0):
 - add headers as: `name amount items`
-- save as `contacts2019.csv`
+- save as `contacts2020.csv`
 
 Add them both to the input folder
 
