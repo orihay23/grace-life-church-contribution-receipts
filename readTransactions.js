@@ -23,40 +23,47 @@ const deductibleCodes = [
 async function run() {
     const contacts = await utils.read(csvFilePath);
     const accounts = await utils.read(csvAccounts);
-    accounts.forEach((account) => {
-        if (_.includes(deductibleCodes, account.code)) {
-            account.name = _.split(account.Transaction, ' - ')[0];
-            const contact = _.find(contacts, (contact) => { 
-                return contact.name.toLowerCase() === account.name.toLowerCase();
-            });
-            if (contact) {
-                if (contact.items === '') {
-                    contact.items = [];
+    try {
+        accounts.forEach((account) => {
+            if (_.includes(deductibleCodes, account.code)) {
+                account.name = _.split(account.Transaction, ' - ')[0];
+                const contact = _.find(contacts, (contact) => { 
+                    return contact.name.toLowerCase() === account.name.toLowerCase();
+                });
+                if (contact) {
+                    // console.log(contact.items);
+                    if (!Array.isArray(contact.items)) {
+                        contact.items = [];
+                    }
+                    // console.log(contact);
+                    // console.log(account);
+                    contact.items.push(account);
                 }
-                contact.items.push(account);
             }
-        }
-    });
-    contacts.forEach(async (contact) => {
-        contact.total = _.sumBy(contact.items, (item) => {
-            return parseFloat(item.Gross);
         });
-        if (contact.total >= 75) {
-            const doc = await utils.loadTemplate(path.resolve(__dirname, '2020 Giving Receipts.docx'));
-            doc.setData({
-                name: contact.name,
+        contacts.forEach(async (contact) => {
+            contact.total = _.sumBy(contact.items, (item) => {
+                return parseFloat(item.Gross);
             });
-            await utils.writeDoc(doc, contact.name);
-            const doc2 = await utils.loadTemplate(path.resolve(__dirname, '2020 Giving ReceiptsPg2.docx'));
+            if (contact.total >= 75) {
+                const doc = await utils.loadTemplate(path.resolve(__dirname, '2020 Giving Receipts.docx'));
+                doc.setData({
+                    name: contact.name,
+                });
+                await utils.writeDoc(doc, contact.name);
+                const doc2 = await utils.loadTemplate(path.resolve(__dirname, '2020 Giving ReceiptsPg2.docx'));
+            
+                doc2.setData({
+                    name: contact.name,
+                    items: contact.items,
+                    total: contact.total,
+                });
+                await utils.writeDocPg2(doc2, contact.name);
+            }
+        });
+    } catch (err) {
         
-            doc2.setData({
-                name: contact.name,
-                items: contact.items,
-                total: contact.total,
-            });
-            await utils.writeDocPg2(doc2, contact.name);
-        }
-    });
+    }
 
     //console.log(contact);
 }
