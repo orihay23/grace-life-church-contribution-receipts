@@ -1,7 +1,7 @@
 var utils = require('./utils');
 const path = require('path');
 const csvAccounts = path.resolve(__dirname, 'input', 'accounts.csv');
-const csvFilePath = path.resolve(__dirname, 'input', 'contacts2020.csv');
+const csvFilePath = path.resolve(__dirname, 'input', 'contacts2021.csv');
 const _ = require('lodash');
 
 const deductibleCodes = [
@@ -46,12 +46,12 @@ async function run() {
                 return parseFloat(item.Gross);
             });
             if (contact.total >= 75) {
-                const doc = await utils.loadTemplate(path.resolve(__dirname, '2020 Giving Receipts.docx'));
+                const doc = await utils.loadTemplate(path.resolve(__dirname, '2021 Giving Receipts.docx'));
                 doc.setData({
                     name: contact.name,
                 });
                 await utils.writeDoc(doc, contact.name);
-                const doc2 = await utils.loadTemplate(path.resolve(__dirname, '2020 Giving ReceiptsPg2.docx'));
+                const doc2 = await utils.loadTemplate(path.resolve(__dirname, '2021 Giving ReceiptsPg2.docx'));
             
                 doc2.setData({
                     name: contact.name,
