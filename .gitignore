@@ -7,3 +7,4 @@ Archive**
 node_modules/**
 output.docx
 out_old/GLC_Contribution_Receipt_**
+emailer/.env
