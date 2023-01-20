@@ -71,7 +71,7 @@ const getPage2 = (person) => {
     try {
         return fs.readFileSync(path.resolve('..', 'out', `GLC_Contribution_Receipt_2022_pg2_${person.name}.pdf`));
     } catch (err) {
-        console.log(`Error reading page 1 for ${person.name} ${err}`);
+        console.log(`Error reading page 2 for ${person.name} ${err}`);
     }
 };
 
@@ -90,7 +90,7 @@ const getMessage = (person) => {
                 content: pg1
             },
             {
-                filename: 'receiptPg1.pdf',
+                filename: 'receiptPg2.pdf',
                 content: pg2
             },
         ]
