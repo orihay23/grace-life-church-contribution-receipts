@@ -49,7 +49,7 @@ const createTransporter = async () => {
 const body = (name) => {
     return `Dear ${name},
 
-Attached please find your 2021 GLC Contribution Receipt. We are so grateful for your faithful support of the Grace Life Church.
+Attached please find your 2022 GLC Contribution Receipt. We are so grateful for your faithful support of the Grace Life Church.
 
 If you believe there are any errors with your receipt (including any contact information that has changed in the past year), please do not hesitate to email us and we will work to fix it quickly.
 
@@ -61,7 +61,7 @@ GLC Finance Team`;
 
 const getPage1 = (person) => {
     try {
-        return fs.readFileSync(path.resolve('..', 'out', `GLC_Contribution_Receipt_2021_${person.name}.pdf`));
+        return fs.readFileSync(path.resolve('..', 'out', `GLC_Contribution_Receipt_2022_${person.name}.pdf`));
     } catch (err) {
         console.log(`Error reading page 1 for ${person.name} ${err}`);
     }
@@ -69,7 +69,7 @@ const getPage1 = (person) => {
 
 const getPage2 = (person) => {
     try {
-        return fs.readFileSync(path.resolve('..', 'out', `GLC_Contribution_Receipt_2021_pg2_${person.name}.pdf`));
+        return fs.readFileSync(path.resolve('..', 'out', `GLC_Contribution_Receipt_2022_pg2_${person.name}.pdf`));
     } catch (err) {
         console.log(`Error reading page 1 for ${person.name} ${err}`);
     }
@@ -82,7 +82,7 @@ const getMessage = (person) => {
     return {
         from: process.env.EMAIL,
         to: person.email,
-        subject: "2021 Grace Life Church Contribution Receipt",
+        subject: "2022 Grace Life Church Contribution Receipt",
         text: body(person.name),
         attachments: [
             {
