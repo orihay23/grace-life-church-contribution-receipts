@@ -43,7 +43,7 @@ async function run() {
         });
         contacts.forEach(async (contact) => {
             contact.total = _.sumBy(contact.items, (item) => {
-                return parseFloat(item.Gross);
+                return parseFloat(item.Gross).toFixed(2);
             });
             if (contact.total >= 75) {
                 const doc = await utils.loadTemplate(path.resolve(__dirname, '2021 Giving Receipts.docx'));

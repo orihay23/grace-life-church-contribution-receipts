@@ -97,16 +97,24 @@ const getMessage = (person) => {
     };
 }
 
+const readPeople = async () => {
+    const csvFilePath = path.resolve('..', 'input', 'emailList2022.csv');
+    return await utils.read(csvFilePath);
+};
+
 const run = async () => {
     const transporter = await createTransporter();
 
-    // const people = readPeople(csv);
-    const people = [{ name: 'John and Felicia Yahiro', email: 'orihay23@gmail.com' }];
-    for (const person of people) {
-        const message = await getMessage(person);
-        console.log(message);
-        await transporter.sendMail(getMessage(person));
-    }
+    // const people = await readPeople(csv);
+    // console.log(people);
+
+    // uncomment when we're ready to send
+    // const people = [{ name: 'John and Felicia Yahiro', email: 'orihay23@gmail.com' }];
+    // for (const person of people) {
+    //     const message = await getMessage(person);
+    //     console.log(message);
+    //     await transporter.sendMail(getMessage(person));
+    // }
 };
 
 run();
