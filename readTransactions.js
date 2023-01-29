@@ -1,7 +1,7 @@
 var utils = require('./utils');
 const path = require('path');
 const csvAccounts = path.resolve(__dirname, 'input', 'accounts.csv');
-const csvFilePath = path.resolve(__dirname, 'input', 'contacts2021.csv');
+const csvFilePath = path.resolve(__dirname, 'input', 'contacts2022.csv');
 const _ = require('lodash');
 
 const deductibleCodes = [
@@ -27,8 +27,8 @@ async function run() {
         accounts.forEach((account) => {
             if (_.includes(deductibleCodes, account.code)) {
                 account.name = _.split(account.Transaction, ' - ')[0];
-                const contact = _.find(contacts, (contact) => { 
-                    return contact.name.toLowerCase() === account.name.toLowerCase();
+                const contact = _.find(contacts, (c) => { 
+                    return c.name?.toLowerCase() === account.name.toLowerCase();
                 });
                 if (contact) {
                     // console.log(contact.items);
@@ -42,16 +42,18 @@ async function run() {
             }
         });
         contacts.forEach(async (contact) => {
-            contact.total = _.sumBy(contact.items, (item) => {
-                return parseFloat(item.Gross).toFixed(2);
+            contact.total = _.sumBy(contact.items, (account) => {
+                return parseFloat(account.Gross);
             });
+            contact.total = contact.total.toFixed();
+            console.log(contact.total);
             if (contact.total >= 75) {
-                const doc = await utils.loadTemplate(path.resolve(__dirname, '2021 Giving Receipts.docx'));
+                const doc = await utils.loadTemplate(path.resolve(__dirname, '2022 Giving Receipts.docx'));
                 doc.setData({
                     name: contact.name,
                 });
                 await utils.writeDoc(doc, contact.name);
-                const doc2 = await utils.loadTemplate(path.resolve(__dirname, '2021 Giving ReceiptsPg2.docx'));
+                const doc2 = await utils.loadTemplate(path.resolve(__dirname, '2022 Giving ReceiptsPg2.docx'));
             
                 doc2.setData({
                     name: contact.name,
@@ -62,7 +64,7 @@ async function run() {
             }
         });
     } catch (err) {
-        
+        console.log(err);
     }
 
     //console.log(contact);
