@@ -31,22 +31,16 @@ async function writeDoc(doc, name) {
             properties: error.properties,
         }
         console.log(JSON.stringify({error: e}));
-        // The error thrown here contains additional information when logged with JSON.stringify (it contains a property object).
         throw error;
     }
 
     var buf = doc.getZip()
                  .generate({type: 'nodebuffer'});
 
-    // buf is a nodejs buffer, you can either write it to a file or do anything else with it.
-    // if (!fs.existsSync(path.resolve(__dirname, 'out', name))) {
-    //     fs.mkdirSync(path.resolve(__dirname, 'out', name));
-    // }
-    // fs.writeFileSync(path.resolve(__dirname, 'out', name, `GLC_Contribution_Receipt_2022_${name}.docx`), buf);
     if (!fs.existsSync(path.resolve(__dirname, 'out'))) {
         fs.mkdirSync(path.resolve(__dirname, 'out'));
     }
-    fs.writeFileSync(path.resolve(__dirname, 'out', `GLC_Contribution_Receipt_2022_${name}.docx`), buf);
+    fs.writeFileSync(path.resolve(__dirname, 'out', `GLC_Contribution_Receipt_2023_${name}.docx`), buf);
 }
 
 async function writeDocPg2(doc, name) {
@@ -69,12 +63,10 @@ async function writeDocPg2(doc, name) {
     var buf = doc.getZip()
                  .generate({type: 'nodebuffer'});
 
-    // buf is a nodejs buffer, you can either write it to a file or do anything else with it.
-    // console.log(path.resolve(__dirname, 'out', `GLC_Contribution_Receipt_2022_${name}.docx`));
     if (!fs.existsSync(path.resolve(__dirname, 'out'))) {
         fs.mkdirSync(path.resolve(__dirname, 'out'));
     }
-    fs.writeFileSync(path.resolve(__dirname, 'out', `GLC_Contribution_Receipt_2022_pg2_${name}.docx`), buf);
+    fs.writeFileSync(path.resolve(__dirname, 'out', `GLC_Contribution_Receipt_2023_pg2_${name}.docx`), buf);
 }
 
 module.exports = {
