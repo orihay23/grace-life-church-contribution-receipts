@@ -26,9 +26,9 @@ async function run() {
     try {
         accounts.forEach((account) => {
             if (_.includes(deductibleCodes, account.code)) {
-                account.name = _.split(account.Transaction, ' - ')[0];
+                // account.name = _.split(account.Transaction, ' - ')[0];
                 const contact = _.find(contacts, (c) => { 
-                    return c.name?.toLowerCase() === account.name.toLowerCase();
+                    return c.name?.toLowerCase() === account.Name.toLowerCase();
                 });
                 if (contact) {
                     // console.log(contact.items);
@@ -46,7 +46,7 @@ async function run() {
                 return parseFloat(account.Gross);
             });
             contact.total = contact.total.toFixed();
-            console.log(contact.total);
+            console.log(`${contact.name} ${contact.total}`);
             if (contact.total >= 75) {
                 const doc = await utils.loadTemplate(path.resolve(__dirname, '2023 Giving Receipts.docx'));
                 doc.setData({

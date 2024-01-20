@@ -1,5 +1,7 @@
 input/**
 out/**
+out_old*/**
+out_old
 out copy
 out copy/**
 out.zip

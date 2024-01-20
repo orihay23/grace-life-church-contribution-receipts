@@ -16,6 +16,9 @@ Pull down "Income by Contact" (use the new one now):
 - add headers as: `name amount`
 - save as `contacts2022.csv`
 
+Create the file `emailList2023.csv` by pulling from Xero in "Export Contact List"
+- change titles to `name` and `email`
+
 Add them both to the input folder
 
 Run instructions:
@@ -27,6 +30,7 @@ Run instructions:
 - Step 1: Select and authorize APIs (gmail v1)
 - Step 2: Exchange authorization --> Gets REFRESH_TOKEN and ACCESS_TOKEN
 - CLIENT_ID and SECRET can be found here: https://console.cloud.google.com/apis/credentials/oauthclient/159547079324-t8892q0rda4iinqu5gkde8oim3q8jof4.apps.googleusercontent.com?authuser=1&project=glc-mailer
+    - Make sure all APIs under gmail are selected
 - if using powershell, SET envs with `$env:ACCESS_TOKEN=""`, etc.
 
 Notes:

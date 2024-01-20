@@ -11,11 +11,11 @@
   "dependencies": {
     "csvtojson": "^2.0.10",
     "docxtemplater": "^3.42.7",
-    "googleapis": "^129.0.0",
-    "jszip": "^3.10.1",
-    "jszip-utils": "0.1.0",
+    "googleapis": "^92.0.0",
+    "jszip": "^2.6.1",
+    "jszip-utils": "0.0.2",
     "lodash": "^4.17.21",
-    "nodemailer": "^6.9.7"
+    "nodemailer": "^6.7.2"
   },
   "devDependencies": {
     "dotenv": "^16.3.1"
