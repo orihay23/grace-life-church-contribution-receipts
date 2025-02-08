@@ -7,8 +7,9 @@
 ### Prepare the Data
 Create "input" folder
 Create "out" folder
-Pull down "Detailed Account Transaction Report" and save as `accounts.csv`:
+Pull down "Detailed Account Transaction Report" (Or a custom report with relevent data) and save as `accounts.csv`:
 - change titles to `code	account	Date	Type	Transaction	Reference	Gross	Sales Tax	Net	Sales Tax Rate	Sales Tax Name	Fund	Department`
+-Delete the rows above the "Date Source Contact etc ..." row
 - make sure Gross is number type, not dollar type
 - sort by date
 
