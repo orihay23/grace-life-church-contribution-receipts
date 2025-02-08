@@ -24,7 +24,7 @@ Pull down "Income by Contact" (use the new one now):
 - add headers as: `name amount`
 - save as `contacts2022.csv`
 
-Create the file `emailList2023.csv` by pulling from Xero in "Export Contact List"
+Create the file `emailList2024.csv` by pulling from Xero in "Export Contact List"
 - change titles to `name` and `email`
 
 Add them both to the input folder

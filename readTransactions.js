@@ -1,7 +1,7 @@
 var utils = require('./utils');
 const path = require('path');
 const csvAccounts = path.resolve(__dirname, 'input', 'accounts.csv');
-const csvFilePath = path.resolve(__dirname, 'input', 'contacts2023.csv');
+const csvFilePath = path.resolve(__dirname, 'input', 'contacts2024.csv');
 const _ = require('lodash');
 
 const deductibleCodes = [
@@ -48,12 +48,12 @@ async function run() {
             contact.total = contact.total.toFixed();
             console.log(`${contact.name} ${contact.total}`);
             if (contact.total >= 75) {
-                const doc = await utils.loadTemplate(path.resolve(__dirname, '2023 Giving Receipts.docx'));
+                const doc = await utils.loadTemplate(path.resolve(__dirname, '2024 Giving Receipts.docx'));
                 doc.setData({
                     name: contact.name,
                 });
                 await utils.writeDoc(doc, contact.name);
-                const doc2 = await utils.loadTemplate(path.resolve(__dirname, '2023 Giving ReceiptsPg2.docx'));
+                const doc2 = await utils.loadTemplate(path.resolve(__dirname, '2024 Giving ReceiptsPg2.docx'));
             
                 doc2.setData({
                     name: contact.name,

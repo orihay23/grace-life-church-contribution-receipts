@@ -40,7 +40,7 @@ async function writeDoc(doc, name) {
     if (!fs.existsSync(path.resolve(__dirname, 'out'))) {
         fs.mkdirSync(path.resolve(__dirname, 'out'));
     }
-    fs.writeFileSync(path.resolve(__dirname, 'out', `GLC_Contribution_Receipt_2023_${name}.docx`), buf);
+    fs.writeFileSync(path.resolve(__dirname, 'out', `GLC_Contribution_Receipt_2024_${name}.docx`), buf);
 }
 
 async function writeDocPg2(doc, name) {
@@ -66,7 +66,7 @@ async function writeDocPg2(doc, name) {
     if (!fs.existsSync(path.resolve(__dirname, 'out'))) {
         fs.mkdirSync(path.resolve(__dirname, 'out'));
     }
-    fs.writeFileSync(path.resolve(__dirname, 'out', `GLC_Contribution_Receipt_2023_pg2_${name}.docx`), buf);
+    fs.writeFileSync(path.resolve(__dirname, 'out', `GLC_Contribution_Receipt_2024_pg2_${name}.docx`), buf);
 }
 
 module.exports = {
