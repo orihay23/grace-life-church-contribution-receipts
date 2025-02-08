@@ -9,9 +9,16 @@ Create "input" folder
 Create "out" folder
 Pull down "Detailed Account Transaction Report" (Or a custom report with relevent data) and save as `accounts.csv`:
 - change titles to `code	account	Date	Type	Transaction	Reference	Gross	Sales Tax	Net	Sales Tax Rate	Sales Tax Name	Fund	Department`
--Delete the rows above the "Date Source Contact etc ..." row
+- Delete the rows above the "Date Source Contact etc ..." row
 - make sure Gross is number type, not dollar type
+- Change Account Code to code
+- Change Account to account
 - sort by date
+
+### Code Prepartion
+- Download Git. Done via Terminal (mac) or download via project
+- Download code editor (suggestions: VS code)
+- This is when you add the code from GLC giving receipts gitlab 
 
 Pull down "Income by Contact" (use the new one now):
 - add headers as: `name amount`
