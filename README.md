@@ -1,8 +1,13 @@
-## To Prepare Each Year
+# To Prepare Each Year
 - Reconcile all INCOMING transactions from the year
 - Add email addresses in Xero for all givers for the year
 - Update "Giving Receipts" docx templates to include the correct year
 - Make sure code is pulling in the correct template
+
+## Code Prepartion
+- Download Git. Done via Terminal (mac) or download via project
+- Download code editor (suggestions: VS code)
+- This is when you add the code from GLC giving receipts gitlab
 
 ### Prepare the Data
 Create "input" folder
@@ -15,10 +20,7 @@ Pull down "Detailed Account Transaction Report" (Or a custom report with releven
 - Change Account to account
 - sort by date
 
-### Code Prepartion
-- Download Git. Done via Terminal (mac) or download via project
-- Download code editor (suggestions: VS code)
-- This is when you add the code from GLC giving receipts gitlab 
+ 
 
 Pull down "Income by Contact" (use the new one now):
 - add headers as: `name amount`
