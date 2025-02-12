@@ -42,10 +42,18 @@ async function run() {
             }
         });
         contacts.forEach(async (contact) => {
-            contact.total = _.sumBy(contact.items, (account) => {
-                return parseFloat(account.Gross);
-            });
-            contact.total = contact.total.toFixed();
+            if (!(contact.items && contact.items.length)) {
+                return;
+            }
+            let runningSum = 0.0;
+            for (const item of contact.items) {
+                runningSum += parseFloat(item.Gross);
+            }
+            // contact.total = _.sumBy(contact.items, (account) => {
+            //     return parseFloat(account.Gross);
+            // });
+            contact.total = runningSum.toFixed(2);
+            // contact.total = contact.total.toFixed();
             console.log(`${contact.name} ${contact.total}`);
             if (contact.total >= 75) {
                 const doc = await utils.loadTemplate(path.resolve(__dirname, '2024 Giving Receipts.docx'));
