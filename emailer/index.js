@@ -101,17 +101,17 @@ const readPeople = async () => {
 const run = async () => {
     const transporter = await createTransporter();
 
-    const people = await readPeople();
+    // const people = await readPeople();
     // console.log(people);
 
     // uncomment when we're ready to send
     // console.log(process.env.EMAIL);
-    // const people = [{ name: 'John and Felicia Yahiro', email: 'orihay23@gmail.com' }];
+    const people = [{ name: 'John and Felicia Yahiro', email: 'orihay23@gmail.com' }];
     for (const person of people) {
         const message = await getMessage(person);
         if (message) {
             console.log(`${person.name} ${person.email}`);
-            await transporter.sendMail(getMessage(person));
+            // await transporter.sendMail(getMessage(person));
         }
     }
     console.log(people.length);
