@@ -1,7 +1,5 @@
 var utils = require('./utils');
 const path = require('path');
-const csvAccounts = path.resolve(__dirname, 'input', 'accounts.csv');
-const csvFilePath = path.resolve(__dirname, 'input', 'contacts2024.csv');
 const _ = require('lodash');
 
 const deductibleCodes = [
@@ -20,65 +18,81 @@ const deductibleCodes = [
     '5002',
 ];
 
+function filterDeductible(accounts) {
+    return accounts.filter((account) => _.includes(deductibleCodes, account.code));
+}
+
+function matchContactsToTransactions(contacts, accounts) {
+    const result = contacts.map((c) => ({ ...c }));
+    const deductible = filterDeductible(accounts);
+    deductible.forEach((account) => {
+        const contact = _.find(result, (c) => {
+            return c.name?.toLowerCase() === account.Name?.toLowerCase();
+        });
+        if (contact) {
+            if (!Array.isArray(contact.items)) {
+                contact.items = [];
+            }
+            contact.items.push(account);
+        }
+    });
+    return result;
+}
+
+function computeTotals(contacts) {
+    return contacts.map((contact) => {
+        if (!(contact.items && contact.items.length)) {
+            return { ...contact, total: '0.00' };
+        }
+        let runningSum = 0.0;
+        for (const item of contact.items) {
+            runningSum += parseFloat(item.Gross);
+        }
+        return { ...contact, total: runningSum.toFixed(2) };
+    });
+}
+
 async function run() {
+    const config = require('./config');
+    const year = config.get('year') || new Date().getFullYear();
+    const csvAccounts = path.resolve(__dirname, 'input', 'accounts.csv');
+    const csvFilePath = path.resolve(__dirname, 'input', `contacts${year}.csv`);
+
     const contacts = await utils.read(csvFilePath);
     const accounts = await utils.read(csvAccounts);
     try {
-        accounts.forEach((account) => {
-            if (_.includes(deductibleCodes, account.code)) {
-                // account.name = _.split(account.Transaction, ' - ')[0];
-                const contact = _.find(contacts, (c) => { 
-                    return c.name?.toLowerCase() === account.Name.toLowerCase();
-                });
-                if (contact) {
-                    // console.log(contact.items);
-                    if (!Array.isArray(contact.items)) {
-                        contact.items = [];
-                    }
-                    // console.log(contact);
-                    // console.log(account);
-                    contact.items.push(account);
-                }
-            }
-        });
-        contacts.forEach(async (contact) => {
-            if (!(contact.items && contact.items.length)) {
-                return;
-            }
-            let runningSum = 0.0;
-            for (const item of contact.items) {
-                runningSum += parseFloat(item.Gross);
-            }
-            // contact.total = _.sumBy(contact.items, (account) => {
-            //     return parseFloat(account.Gross);
-            // });
-            contact.total = runningSum.toFixed(2);
-            // contact.total = contact.total.toFixed();
+        const matched = matchContactsToTransactions(contacts, accounts);
+        const withTotals = computeTotals(matched);
+
+        for (const contact of withTotals) {
             console.log(`${contact.name} ${contact.total}`);
             if (contact.total >= 75) {
-                const doc = await utils.loadTemplate(path.resolve(__dirname, '2024 Giving Receipts.docx'));
-                doc.setData({
-                    name: contact.name,
-                });
-                await utils.writeDoc(doc, contact.name);
-                const doc2 = await utils.loadTemplate(path.resolve(__dirname, '2024 Giving ReceiptsPg2.docx'));
-            
+                const doc = await utils.loadTemplate(
+                    path.resolve(__dirname, config.get('templatePg1') || `${year} Giving Receipts.docx`)
+                );
+                doc.setData({ name: contact.name });
+                await utils.writeDoc(doc, contact.name, year);
+
+                const doc2 = await utils.loadTemplate(
+                    path.resolve(__dirname, config.get('templatePg2') || `${year} Giving ReceiptsPg2.docx`)
+                );
                 doc2.setData({
                     name: contact.name,
                     items: contact.items,
                     total: contact.total,
                 });
-                await utils.writeDocPg2(doc2, contact.name);
+                await utils.writeDocPg2(doc2, contact.name, year);
             }
-        });
+        }
     } catch (err) {
         console.log(err);
     }
-
-    //console.log(contact);
 }
 
-run();
+if (require.main === module) {
+    run();
+}
 
+module.exports = { filterDeductible, matchContactsToTransactions, computeTotals, deductibleCodes };
 
 //set the templateVariables
