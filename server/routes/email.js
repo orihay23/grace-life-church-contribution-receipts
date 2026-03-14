@@ -107,6 +107,37 @@ function getSentMap() {
     return fs.existsSync(sentPath) ? JSON.parse(fs.readFileSync(sentPath, 'utf8')) : {};
 }
 
+// POST /api/email/update-address — update a donor's email in the emailList CSV
+router.post('/update-address', async (req, res) => {
+    try {
+        const { name, email } = req.body;
+        if (!name) return res.status(400).json({ error: 'name required' });
+        const cfg = config.all();
+        const year = cfg.year || new Date().getFullYear();
+        const csvPath = path.resolve(ROOT, 'input', `emailList${year}.csv`);
+        if (!fs.existsSync(csvPath)) return res.status(404).json({ error: `emailList${year}.csv not found` });
+
+        const { read } = require('../../utils');
+        const rows = await read(csvPath);
+        const idx = rows.findIndex((r) => r.name === name);
+        if (idx === -1) {
+            rows.push({ name, email });
+        } else {
+            rows[idx].email = email;
+        }
+
+        const lines = ['name,email', ...rows.map((r) => {
+            const n = r.name.includes(',') ? `"${r.name}"` : r.name;
+            const e = (r.email || '').includes(',') ? `"${r.email}"` : (r.email || '');
+            return `${n},${e}`;
+        })];
+        fs.writeFileSync(csvPath, lines.join('\n'));
+        res.json({ ok: true });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+
 // GET /api/email/ignored — return ignored donor map
 router.get('/ignored', (req, res) => {
     res.json({ ignored: getIgnoredMap() });

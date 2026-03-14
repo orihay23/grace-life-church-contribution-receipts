@@ -51,6 +51,8 @@
   .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #ccc; border-top-color: #2c5f2e; border-radius: 50%; animation: spin .6s linear infinite; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .hint { font-size: 12px; color: #888; margin-top: 4px; }
+  .btn-icon { background: none; border: none; cursor: pointer; font-size: 14px; color: #888; padding: 0 3px; vertical-align: middle; }
+  .btn-icon:hover { color: #333; }
   .section-title { font-weight: 700; font-size: 13px; color: #444; margin: 18px 0 8px; }
   .divider { border: none; border-top: 1px solid #eee; margin: 18px 0; }
 </style>
@@ -398,8 +400,10 @@ async function loadResults() {
 
   const rows = res.donors.map(d => {
     const isIgnored = !!ignored[d.name];
-    const email = emails[d.name] || '<span style="color:#999">not found</span>';
+    const emailVal = emails[d.name] || '';
+    const emailDisplay = emailVal || '<span style="color:#999">not found</span>';
     const safeName = d.name.replace(/'/g, "\\'");
+    const safeEmail = emailVal.replace(/'/g, "\\'");
     const statusBadge = isIgnored
       ? '<span class="badge badge-ignored">Ignored</span>'
       : d.sent
@@ -415,7 +419,13 @@ async function loadResults() {
       <td>${d.name}</td>
       <td>$${parseFloat(d.total).toFixed(2)}</td>
       <td>${d.transactions}</td>
-      <td>${email}</td>
+      <td id="email-cell-${d.name.replace(/\s+/g,'-')}">
+        <span class="email-display">${emailDisplay}</span>
+        <input class="email-input" type="email" value="${emailVal}" style="display:none;width:180px;padding:3px 6px;font-size:13px;border:1px solid #ccc;border-radius:4px">
+        <button class="btn-icon" title="Edit email" onclick="startEditEmail('${safeName}')">&#9998;</button>
+        <button class="btn-icon btn-icon-ok" title="Save" style="display:none;color:#2c5f2e" onclick="saveEmail('${safeName}')">&#10003;</button>
+        <button class="btn-icon btn-icon-cancel" title="Cancel" style="display:none;color:#c62828" onclick="cancelEditEmail('${safeName}')">&#10005;</button>
+      </td>
       <td>${statusBadge}</td>
       <td style="display:flex;gap:6px">${sendBtn}${ignoreBtn}</td>
     </tr>`;
@@ -426,6 +436,36 @@ async function loadResults() {
       <thead><tr><th>Donor</th><th>Total</th><th>Transactions</th><th>Email</th><th>Status</th><th></th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
+}
+
+// ── Email address inline edit ───────────────────────────────────────────────
+function emailCellId(name) { return 'email-cell-' + name.replace(/\s+/g, '-'); }
+
+function startEditEmail(name) {
+  const cell = document.getElementById(emailCellId(name));
+  cell.querySelector('.email-display').style.display = 'none';
+  cell.querySelector('.email-input').style.display = 'inline';
+  cell.querySelector('.btn-icon').style.display = 'none';
+  cell.querySelector('.btn-icon-ok').style.display = 'inline';
+  cell.querySelector('.btn-icon-cancel').style.display = 'inline';
+  cell.querySelector('.email-input').focus();
+}
+
+function cancelEditEmail(name) {
+  const cell = document.getElementById(emailCellId(name));
+  cell.querySelector('.email-display').style.display = 'inline';
+  cell.querySelector('.email-input').style.display = 'none';
+  cell.querySelector('.btn-icon').style.display = 'inline';
+  cell.querySelector('.btn-icon-ok').style.display = 'none';
+  cell.querySelector('.btn-icon-cancel').style.display = 'none';
+}
+
+async function saveEmail(name) {
+  const cell = document.getElementById(emailCellId(name));
+  const newEmail = cell.querySelector('.email-input').value.trim();
+  const res = await api('POST', '/api/email/update-address', { name, email: newEmail });
+  if (res.ok) loadResults();
+  else { alert('Failed to save: ' + (res.error || 'Unknown error')); cancelEditEmail(name); }
 }
 
 async function toggleIgnore(name, ignored) {
