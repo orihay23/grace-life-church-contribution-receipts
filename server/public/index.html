@@ -45,6 +45,9 @@
   .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
   .badge-sent { background: #c8e6c9; color: #2e7d32; }
   .badge-unsent { background: #fff3e0; color: #e65100; }
+  .badge-ignored { background: #eeeeee; color: #888; }
+  tr.ignored td { opacity: .45; }
+  tr.ignored td:last-child, tr.ignored td:nth-last-child(2) { opacity: 1; }
   .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #ccc; border-top-color: #2c5f2e; border-radius: 50%; animation: spin .6s linear infinite; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .hint { font-size: 12px; color: #888; margin-top: 4px; }
@@ -377,7 +380,11 @@ function renderStats(stats, containerId) {
 
 // ── Results ────────────────────────────────────────────────────────────────
 async function loadResults() {
-  const [res, emailRes] = await Promise.all([api('GET', '/api/results'), api('GET', '/api/email/list')]);
+  const [res, emailRes, ignoredRes] = await Promise.all([
+    api('GET', '/api/results'),
+    api('GET', '/api/email/list'),
+    api('GET', '/api/email/ignored'),
+  ]);
   const el = document.getElementById('results-content');
   if (!res.ready) {
     el.innerHTML = '<p style="color:#999;font-size:13px;margin-top:12px">No results yet. Run generation first.</p>';
@@ -387,16 +394,30 @@ async function loadResults() {
   renderStats(res.stats, 'results-content');
 
   const emails = emailRes.emails || {};
+  const ignored = ignoredRes.ignored || {};
+
   const rows = res.donors.map(d => {
+    const isIgnored = !!ignored[d.name];
     const email = emails[d.name] || '<span style="color:#999">not found</span>';
     const safeName = d.name.replace(/'/g, "\\'");
-    return `<tr>
+    const statusBadge = isIgnored
+      ? '<span class="badge badge-ignored">Ignored</span>'
+      : d.sent
+        ? `<span class="badge badge-sent">Sent ${new Date(d.sentAt).toLocaleDateString()}</span>`
+        : '<span class="badge badge-unsent">Unsent</span>';
+    const sendBtn = !isIgnored && !d.sent
+      ? `<button class="btn btn-primary btn-sm" onclick="sendToOne('${safeName}')">Send</button>`
+      : '';
+    const ignoreBtn = isIgnored
+      ? `<button class="btn btn-secondary btn-sm" onclick="toggleIgnore('${safeName}', false)">Unignore</button>`
+      : `<button class="btn btn-secondary btn-sm" onclick="toggleIgnore('${safeName}', true)">Ignore</button>`;
+    return `<tr class="${isIgnored ? 'ignored' : ''}">
       <td>${d.name}</td>
       <td>$${parseFloat(d.total).toFixed(2)}</td>
       <td>${d.transactions}</td>
       <td>${email}</td>
-      <td><span class="badge ${d.sent ? 'badge-sent' : 'badge-unsent'}">${d.sent ? 'Sent ' + new Date(d.sentAt).toLocaleDateString() : 'Unsent'}</span></td>
-      <td><button class="btn btn-primary btn-sm" onclick="sendToOne('${safeName}')">Send</button></td>
+      <td>${statusBadge}</td>
+      <td style="display:flex;gap:6px">${sendBtn}${ignoreBtn}</td>
     </tr>`;
   }).join('');
 
@@ -405,6 +426,11 @@ async function loadResults() {
       <thead><tr><th>Donor</th><th>Total</th><th>Transactions</th><th>Email</th><th>Status</th><th></th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
+}
+
+async function toggleIgnore(name, ignored) {
+  await api('POST', '/api/email/ignore', { name, ignored });
+  loadResults();
 }
 
 // ── Email ──────────────────────────────────────────────────────────────────

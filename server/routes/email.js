@@ -74,6 +74,19 @@ function markSent(name) {
     fs.writeFileSync(sentPath, JSON.stringify(sent, null, 2));
 }
 
+function getIgnoredMap() {
+    const ignoredPath = path.resolve(ROOT, 'out', 'ignored.json');
+    return fs.existsSync(ignoredPath) ? JSON.parse(fs.readFileSync(ignoredPath, 'utf8')) : {};
+}
+
+function setIgnored(name, ignored) {
+    const ignoredPath = path.resolve(ROOT, 'out', 'ignored.json');
+    const map = getIgnoredMap();
+    if (ignored) map[name] = true;
+    else delete map[name];
+    fs.writeFileSync(ignoredPath, JSON.stringify(map, null, 2));
+}
+
 function getEmailList(year) {
     const csvPath = path.resolve(ROOT, 'input', `emailList${year}.csv`);
     if (!fs.existsSync(csvPath)) {
@@ -93,6 +106,19 @@ function getSentMap() {
     const sentPath = path.resolve(ROOT, 'out', 'sent.json');
     return fs.existsSync(sentPath) ? JSON.parse(fs.readFileSync(sentPath, 'utf8')) : {};
 }
+
+// GET /api/email/ignored — return ignored donor map
+router.get('/ignored', (req, res) => {
+    res.json({ ignored: getIgnoredMap() });
+});
+
+// POST /api/email/ignore — toggle ignore for a donor
+router.post('/ignore', (req, res) => {
+    const { name, ignored } = req.body;
+    if (!name) return res.status(400).json({ error: 'name required' });
+    setIgnored(name, ignored);
+    res.json({ ok: true, name, ignored });
+});
 
 // GET /api/email/list — return name→email map for the configured year
 router.get('/list', async (req, res) => {
@@ -147,7 +173,8 @@ router.post('/send', async (req, res) => {
         const emailMap = {};
         emailList.forEach((p) => { if (p.name && p.email) emailMap[p.name.toLowerCase()] = p.email; });
 
-        let queue = donors.filter((d) => !sent[d.name]);
+        const ignored = getIgnoredMap();
+        let queue = donors.filter((d) => !sent[d.name] && !ignored[d.name]);
         if (targetName) queue = queue.filter((d) => d.name === targetName);
         const batch = queue.slice(0, targetName ? queue.length : batchSize);
 
