@@ -30,7 +30,7 @@
   .btn-danger { background: #c62828; color: #fff; }
   .btn-sm { padding: 6px 14px; font-size: 13px; }
   .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
-  .status { margin-top: 14px; padding: 10px 14px; border-radius: 6px; font-size: 13px; }
+  .status { margin-top: 14px; padding: 10px 14px; border-radius: 6px; font-size: 13px; white-space: pre-wrap; }
   .status.ok { background: #e8f5e9; color: #2e7d32; }
   .status.err { background: #ffebee; color: #c62828; }
   .status.info { background: #e3f2fd; color: #1565c0; }
@@ -377,7 +377,7 @@ function renderStats(stats, containerId) {
 
 // ── Results ────────────────────────────────────────────────────────────────
 async function loadResults() {
-  const res = await api('GET', '/api/results');
+  const [res, emailRes] = await Promise.all([api('GET', '/api/results'), api('GET', '/api/email/list')]);
   const el = document.getElementById('results-content');
   if (!res.ready) {
     el.innerHTML = '<p style="color:#999;font-size:13px;margin-top:12px">No results yet. Run generation first.</p>';
@@ -386,19 +386,23 @@ async function loadResults() {
 
   renderStats(res.stats, 'results-content');
 
-  const rows = res.donors.map(d =>
-    `<tr>
+  const emails = emailRes.emails || {};
+  const rows = res.donors.map(d => {
+    const email = emails[d.name] || '<span style="color:#999">not found</span>';
+    const safeName = d.name.replace(/'/g, "\\'");
+    return `<tr>
       <td>${d.name}</td>
       <td>$${parseFloat(d.total).toFixed(2)}</td>
       <td>${d.transactions}</td>
+      <td>${email}</td>
       <td><span class="badge ${d.sent ? 'badge-sent' : 'badge-unsent'}">${d.sent ? 'Sent ' + new Date(d.sentAt).toLocaleDateString() : 'Unsent'}</span></td>
-      <td><button class="btn btn-secondary btn-sm" onclick="sendToOne('${d.name.replace(/'/g, "\\'")}')">Send</button></td>
-    </tr>`
-  ).join('');
+      <td><button class="btn btn-primary btn-sm" onclick="sendToOne('${safeName}')">Send</button></td>
+    </tr>`;
+  }).join('');
 
   el.innerHTML += `
     <table>
-      <thead><tr><th>Donor</th><th>Total</th><th>Transactions</th><th>Email Status</th><th></th></tr></thead>
+      <thead><tr><th>Donor</th><th>Total</th><th>Transactions</th><th>Email</th><th>Status</th><th></th></tr></thead>
       <tbody>${rows}</tbody>
     </table>`;
 }
@@ -427,8 +431,10 @@ async function sendBatch() {
   const res = await api('POST', '/api/email/send', { batchSize: n });
   if (res.ok) {
     const ok = res.sent.filter(r => r.ok).length;
-    const fail = res.sent.filter(r => r.error).length;
-    setStatus('status-email-batch', `Sent: ${ok} | Errors: ${fail}`, ok > 0 ? 'ok' : 'err');
+    const errors = res.sent.filter(r => r.error);
+    let msg = `Sent: ${ok} | Errors: ${errors.length}`;
+    if (errors.length) msg += '\n' + errors.map(r => `${r.name}: ${r.error}`).join('\n');
+    setStatus('status-email-batch', msg, ok > 0 && !errors.length ? 'ok' : 'err');
     loadResults();
   } else setStatus('status-email-batch', res.error || 'Failed.', 'err');
 }

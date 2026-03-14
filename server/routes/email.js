@@ -94,6 +94,20 @@ function getSentMap() {
     return fs.existsSync(sentPath) ? JSON.parse(fs.readFileSync(sentPath, 'utf8')) : {};
 }
 
+// GET /api/email/list — return name→email map for the configured year
+router.get('/list', async (req, res) => {
+    try {
+        const cfg = config.all();
+        const year = cfg.year || new Date().getFullYear();
+        const emailList = await getEmailList(year);
+        const map = {};
+        emailList.forEach((p) => { if (p.name && p.email) map[p.name] = p.email; });
+        res.json({ ok: true, emails: map });
+    } catch (err) {
+        res.json({ ok: false, emails: {}, error: err.message });
+    }
+});
+
 // POST /api/email/test — send a sample to your own address
 router.post('/test', async (req, res) => {
     try {
