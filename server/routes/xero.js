@@ -14,6 +14,7 @@ router.get('/check', (req, res) => {
     const required = [
         path.resolve(ROOT, 'input', 'accounts.csv'),
         path.resolve(ROOT, 'input', `contacts${year}.csv`),
+        path.resolve(ROOT, 'input', `emailList${year}.csv`),
     ];
     const missing = required.filter((f) => !fs.existsSync(f)).map((f) => path.basename(f));
     if (missing.length) {
