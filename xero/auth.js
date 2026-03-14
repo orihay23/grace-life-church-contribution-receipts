@@ -15,7 +15,6 @@ const REDIRECT_URI = 'http://localhost:3737/xero-callback';
 const SCOPES = [
     'accounting.contacts.read',
     'accounting.journals.read',
-    'accounting.reports.read',
     'offline_access',
 ];
 

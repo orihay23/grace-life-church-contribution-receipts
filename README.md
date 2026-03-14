@@ -82,6 +82,37 @@ Sent status is tracked in `out/sent.json` so batches resume correctly across ses
 
 ---
 
+## Xero OAuth Setup
+
+The app connects to Xero using OAuth2 to automatically download reports. You need a Xero app to get a Client ID and Secret.
+
+1. Go to [Xero Developer Portal](https://developer.xero.com/app/manage) and sign in with your Xero account
+2. Click **New app**
+3. Fill in the details:
+   - **App name**: anything (e.g. `GLC Receipts`)
+   - **Integration type**: Web app
+   - **Company or application URL**: any valid https URL (informational only — use your church website, e.g. `https://gracechurch.us`)
+   - **Redirect URI**: `http://localhost:3737/xero-callback`
+4. Click **Create app**
+5. On the app detail page, copy the **Client ID**
+6. Click **Generate a secret**, then copy the **Client Secret** (save it immediately — it won't be shown again)
+7. In the **Scopes** section of the app, enable:
+   - `accounting.contacts.read`
+   - `accounting.journals.read`
+   - `offline_access`
+8. Paste the Client ID and Client Secret into the web UI under **Configure** and save
+
+Once configured, click **Connect to Xero** in Step 3. A browser window will open asking you to log in to Xero and select which organization to connect. After you approve, the window closes and the app is linked to that organization.
+
+> Note: You must be an admin or standard user in the Xero organization to authorize the connection.
+
+**Troubleshooting `unauthorized_client`:**
+- Make sure you saved the Client ID and Secret in Step 1 *before* clicking Connect to Xero
+- Double-check that the Redirect URI in the Xero Developer Portal is exactly `http://localhost:3737/xero-callback` (no trailing slash, must be http not https)
+- Confirm the app type is **Web app** (not Machine to Machine or Private)
+
+---
+
 ## Gmail OAuth Setup
 
 The app uses Gmail OAuth2 via the Google OAuth Playground (no Google Cloud billing required).
