@@ -46,7 +46,7 @@ function computeTotals(contacts) {
         }
         let runningSum = 0.0;
         for (const item of contact.items) {
-            runningSum += parseFloat(item.Gross);
+            runningSum += parseFloat(String(item.Gross).replace(/,/g, ''));
         }
         return { ...contact, total: runningSum.toFixed(2) };
     });

@@ -93,6 +93,12 @@ describe('computeTotals', () => {
         expect(result[0].total).toMatch(/^\d+\.\d{2}$/);
     });
 
+    it('handles comma-formatted Gross values (e.g. "10,000.00")', () => {
+        const contact = { name: 'Test', items: [{ Gross: '10,000.00' }] };
+        const result = computeTotals([contact]);
+        expect(result[0].total).toBe('10000.00');
+    });
+
     it('does not mutate original contacts', () => {
         const input = [{ name: 'Test', items: [{ Gross: '100.00' }] }];
         computeTotals(input);
