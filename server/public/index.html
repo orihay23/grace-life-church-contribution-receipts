@@ -170,13 +170,21 @@
       </div>
       <div class="card-body" id="body-generate">
         <p style="font-size:13px;color:#555;margin-top:12px">
-          Generates DOCX receipt files in the <code>out/</code> folder. After generation, convert them to PDF using LibreOffice (macOS) or the VBScript (Windows) before sending emails.
+          Generates DOCX receipt files in the <code>out/</code> folder. After generation, convert them to PDF before sending emails.
         </p>
         <div class="btn-group">
           <button class="btn btn-primary" id="btn-generate" onclick="generate()">Generate Receipts</button>
         </div>
         <div id="status-generate"></div>
         <div id="stats-generate"></div>
+        <div id="convert-section" style="display:none">
+          <hr class="divider">
+          <div class="section-title">Convert to PDF</div>
+          <div class="btn-group">
+            <button class="btn btn-secondary" id="btn-convert" onclick="convertPdf()">Convert DOCX to PDF</button>
+          </div>
+          <div id="status-convert"></div>
+        </div>
       </div>
     </div>
 
@@ -442,11 +450,29 @@ document.getElementById('batch-size').addEventListener('input', function() {
   document.getElementById('batch-label').textContent = this.value || '10';
 });
 
+// ── Convert to PDF ─────────────────────────────────────────────────────────
+async function convertPdf() {
+  const btn = document.getElementById('btn-convert');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Converting...';
+  setStatus('status-convert', 'Running LibreOffice...', 'info');
+
+  const res = await api('POST', '/api/convert');
+
+  btn.disabled = false;
+  btn.textContent = 'Convert DOCX to PDF';
+
+  if (res.ok) setStatus('status-convert', `Converted ${res.converted} file(s) to PDF.`, 'ok');
+  else setStatus('status-convert', res.error || 'Conversion failed.', 'err');
+}
+
 // ── Init ───────────────────────────────────────────────────────────────────
 (async function init() {
   await loadConfig();
   await loadTemplates();
   await loadResults();
+  const cv = await api('GET', '/api/convert/available');
+  if (cv.available) document.getElementById('convert-section').style.display = '';
 })();
 </script>
 </body>

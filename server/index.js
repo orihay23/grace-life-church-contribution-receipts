@@ -12,6 +12,7 @@ app.use('/api/results', require('./routes/results'));
 app.use('/api/email', require('./routes/email'));
 app.use('/api/templates', require('./routes/templates'));
 app.use('/api/xero', require('./routes/xero'));
+app.use('/api/convert', require('./routes/convert'));
 
 // Register Xero OAuth callback route
 require('../xero/auth').startAuthFlow(app);
