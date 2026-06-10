@@ -98,9 +98,13 @@ The app connects to Xero using OAuth2 to automatically download reports. You nee
 6. Click **Generate a secret**, then copy the **Client Secret** (save it immediately — it won't be shown again)
 7. In the **Scopes** section of the app, enable:
    - `accounting.contacts.read`
-   - `accounting.journals.read`
+   - `accounting.banktransactions.read`
    - `offline_access`
 8. Paste the Client ID and Client Secret into the web UI under **Configure** and save
+
+> **Note on scopes:** Apps created on or after 2 March 2026 use Xero's granular scopes, which is why this app requests `accounting.banktransactions.read` instead of the older broad `accounting.journals.read` scope (journals are no longer available to new apps on the standard tier).
+
+> **Xero data requirement:** Donations must be entered as **Receive Money** bank transactions in Xero, coded to income account codes. The integration reads from the Bank Transactions API — it will not see donations entered any other way.
 
 Once configured, click **Connect to Xero** in Step 3. A browser window will open asking you to log in to Xero and select which organization to connect. After you approve, the window closes and the app is linked to that organization.
 

@@ -20,7 +20,7 @@
     "lodash": "^4.17.21",
     "nodemailer": "^6.7.2",
     "open": "^11.0.0",
-    "xero-node": "^14.0.0"
+    "xero-node": "^18.0.0"
   },
   "devDependencies": {
     "dotenv": "^16.3.1",

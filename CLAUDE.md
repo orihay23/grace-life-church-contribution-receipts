@@ -29,7 +29,7 @@ PDF conversion (after generating DOCX files in `out/`):
 - `server/index.js` — Express app; routes: `/api/config`, `/api/generate`, `/api/results`, `/api/email`, `/api/templates`, `/api/xero`
 - `server/public/index.html` — single-page web UI
 - `xero/auth.js` — Xero OAuth2 PKCE flow; registers `/xero-callback` on the Express app
-- `xero/reports.js` — downloads Journals + Contacts from Xero API → writes `input/accounts.csv`, `input/contacts{year}.csv`, `input/emailList{year}.csv`
+- `xero/reports.js` — downloads Bank Transactions + Contacts from Xero API → writes `input/accounts.csv`, `input/contacts{year}.csv`, `input/emailList{year}.csv`
 - `tests/` — Jest tests; fixtures in `tests/fixtures/`
 
 ## Architecture
