@@ -18,7 +18,8 @@ async function loadTemplate(docPath) {
     return doc;
 }
 
-async function writeDoc(doc, name) {
+async function writeDoc(doc, name, year) {
+    year = year || new Date().getFullYear();
     try {
         // render the document (replace all occurences of {first_name} by John, {last_name} by Doe, ...)
         doc.render()
@@ -40,10 +41,11 @@ async function writeDoc(doc, name) {
     if (!fs.existsSync(path.resolve(__dirname, 'out'))) {
         fs.mkdirSync(path.resolve(__dirname, 'out'));
     }
-    fs.writeFileSync(path.resolve(__dirname, 'out', `GLC_Contribution_Receipt_2024_${name}.docx`), buf);
+    fs.writeFileSync(path.resolve(__dirname, 'out', `GLC_Contribution_Receipt_${year}_${name}.docx`), buf);
 }
 
-async function writeDocPg2(doc, name) {
+async function writeDocPg2(doc, name, year) {
+    year = year || new Date().getFullYear();
     try {
         // render the document (replace all occurences of {first_name} by John, {last_name} by Doe, ...)
         doc.render()
@@ -66,7 +68,7 @@ async function writeDocPg2(doc, name) {
     if (!fs.existsSync(path.resolve(__dirname, 'out'))) {
         fs.mkdirSync(path.resolve(__dirname, 'out'));
     }
-    fs.writeFileSync(path.resolve(__dirname, 'out', `GLC_Contribution_Receipt_2024_pg2_${name}.docx`), buf);
+    fs.writeFileSync(path.resolve(__dirname, 'out', `GLC_Contribution_Receipt_${year}_pg2_${name}.docx`), buf);
 }
 
 module.exports = {

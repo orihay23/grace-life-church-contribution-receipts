@@ -4,20 +4,26 @@
   "description": "glc giving receipts",
   "main": "readTransactions.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node start.js",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "csvtojson": "^2.0.10",
     "docxtemplater": "^3.42.7",
+    "express": "^5.2.1",
     "googleapis": "^92.0.0",
     "jszip": "^2.6.1",
     "jszip-utils": "0.0.2",
     "lodash": "^4.17.21",
-    "nodemailer": "^6.7.2"
+    "nodemailer": "^6.7.2",
+    "open": "^11.0.0",
+    "xero-node": "^14.0.0"
   },
   "devDependencies": {
-    "dotenv": "^16.3.1"
+    "dotenv": "^16.3.1",
+    "jest": "^30.3.0"
   }
 }

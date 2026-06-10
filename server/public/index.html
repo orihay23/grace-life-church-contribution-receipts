@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GLC Contribution Receipts</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; background: #f5f5f5; margin: 0; padding: 20px; color: #222; }
+  h1 { color: #2c5f2e; margin-bottom: 4px; }
+  .subtitle { color: #666; margin-bottom: 24px; font-size: 14px; }
+  .steps { display: flex; flex-direction: column; gap: 16px; max-width: 860px; margin: 0 auto; }
+  .card { background: #fff; border-radius: 10px; box-shadow: 0 1px 4px rgba(0,0,0,.1); overflow: hidden; }
+  .card-header { display: flex; align-items: center; gap: 12px; padding: 14px 20px; cursor: pointer; user-select: none; }
+  .card-header:hover { background: #fafafa; }
+  .step-num { background: #2c5f2e; color: #fff; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 13px; flex-shrink: 0; }
+  .card-header h2 { margin: 0; font-size: 16px; flex: 1; }
+  .chevron { transition: transform .2s; font-size: 12px; color: #999; }
+  .card-body { display: none; padding: 0 20px 20px; border-top: 1px solid #eee; }
+  .card-body.open { display: block; }
+  label { display: block; font-size: 13px; font-weight: 600; margin: 14px 0 4px; color: #444; }
+  input[type=text], input[type=number], input[type=email], input[type=password], select {
+    width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px;
+  }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .btn { display: inline-block; padding: 9px 20px; border: none; border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity .15s; }
+  .btn:hover { opacity: .85; }
+  .btn-primary { background: #2c5f2e; color: #fff; }
+  .btn-secondary { background: #e8f5e9; color: #2c5f2e; }
+  .btn-danger { background: #c62828; color: #fff; }
+  .btn-sm { padding: 6px 14px; font-size: 13px; }
+  .btn-group { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+  .status { margin-top: 14px; padding: 10px 14px; border-radius: 6px; font-size: 13px; white-space: pre-wrap; }
+  .status.ok { background: #e8f5e9; color: #2e7d32; }
+  .status.err { background: #ffebee; color: #c62828; }
+  .status.info { background: #e3f2fd; color: #1565c0; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; margin-top: 14px; }
+  .stat-box { background: #f9f9f9; border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px 14px; }
+  .stat-box .val { font-size: 22px; font-weight: 700; color: #2c5f2e; }
+  .stat-box .lbl { font-size: 12px; color: #777; margin-top: 2px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 14px; font-size: 13px; }
+  th { text-align: left; padding: 8px 10px; background: #f0f4f0; color: #444; border-bottom: 2px solid #ddd; }
+  td { padding: 8px 10px; border-bottom: 1px solid #eee; }
+  tr:hover td { background: #fafff8; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
+  .badge-sent { background: #c8e6c9; color: #2e7d32; }
+  .badge-unsent { background: #fff3e0; color: #e65100; }
+  .badge-ignored { background: #eeeeee; color: #888; }
+  tr.ignored td { opacity: .45; }
+  tr.ignored td:last-child, tr.ignored td:nth-last-child(2) { opacity: 1; }
+  .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid #ccc; border-top-color: #2c5f2e; border-radius: 50%; animation: spin .6s linear infinite; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .hint { font-size: 12px; color: #888; margin-top: 4px; }
+  .btn-icon { background: none; border: none; cursor: pointer; font-size: 14px; color: #888; padding: 0 3px; vertical-align: middle; }
+  .btn-icon:hover { color: #333; }
+  .section-title { font-weight: 700; font-size: 13px; color: #444; margin: 18px 0 8px; }
+  .divider { border: none; border-top: 1px solid #eee; margin: 18px 0; }
+</style>
+</head>
+<body>
+<div style="max-width:860px;margin:0 auto">
+  <h1>GLC Contribution Receipts</h1>
+  <p class="subtitle">Grace Life Church &mdash; Annual Giving Receipt Generator</p>
+
+  <div class="steps">
+
+    <!-- STEP 1: Configure -->
+    <div class="card" id="card-config">
+      <div class="card-header" onclick="toggle('config')">
+        <div class="step-num">1</div>
+        <h2>Configure</h2>
+        <span class="chevron" id="chev-config">&#9660;</span>
+      </div>
+      <div class="card-body open" id="body-config">
+        <label>Tax Year</label>
+        <input type="number" id="cfg-year" placeholder="e.g. 2024" min="2018" max="2099">
+        <p class="hint">Used to find input CSVs (contacts{year}.csv) and name output files.</p>
+
+        <hr class="divider">
+        <div class="section-title">Gmail / OAuth Credentials</div>
+        <div class="row">
+          <div>
+            <label>Sending Email Address</label>
+            <input type="email" id="cfg-email" placeholder="church@gmail.com">
+          </div>
+          <div>
+            <label>Google Client ID</label>
+            <input type="text" id="cfg-clientId" placeholder="xxxx.apps.googleusercontent.com">
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label>Client Secret</label>
+            <input type="password" id="cfg-clientSecret" placeholder="Leave blank to keep existing">
+          </div>
+          <div>
+            <label>Refresh Token</label>
+            <input type="password" id="cfg-refreshToken" placeholder="Leave blank to keep existing">
+          </div>
+        </div>
+        <div>
+          <label>Access Token</label>
+          <input type="password" id="cfg-accessToken" placeholder="Leave blank to keep existing">
+        </div>
+
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveConfig()">Save Configuration</button>
+        </div>
+        <div id="status-config"></div>
+      </div>
+    </div>
+
+    <!-- STEP 2: Templates -->
+    <div class="card" id="card-templates">
+      <div class="card-header" onclick="toggle('templates')">
+        <div class="step-num">2</div>
+        <h2>Select Templates</h2>
+        <span class="chevron" id="chev-templates">&#9660;</span>
+      </div>
+      <div class="card-body" id="body-templates">
+        <div class="row">
+          <div>
+            <label>Page 1 Template</label>
+            <select id="tpl-pg1"></select>
+            <p class="hint">Summary page (donor name + total)</p>
+          </div>
+          <div>
+            <label>Page 2 Template</label>
+            <select id="tpl-pg2"></select>
+            <p class="hint">Itemized transactions page</p>
+          </div>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="saveTemplates()">Save Template Selection</button>
+        </div>
+        <div id="status-templates"></div>
+      </div>
+    </div>
+
+    <!-- STEP 3: Xero / Data -->
+    <div class="card" id="card-xero">
+      <div class="card-header" onclick="toggle('xero')">
+        <div class="step-num">3</div>
+        <h2>Fetch Data from Xero</h2>
+        <span class="chevron" id="chev-xero">&#9660;</span>
+      </div>
+      <div class="card-body" id="body-xero">
+        <p style="font-size:13px;color:#555;margin-top:12px">
+          Connect to Xero to automatically download the required CSV reports, or place them manually in the <code>input/</code> folder.
+        </p>
+        <div class="row">
+          <div>
+            <label>Xero Client ID</label>
+            <input type="text" id="cfg-xeroClientId" placeholder="From Xero developer portal">
+          </div>
+          <div>
+            <label>Xero Client Secret</label>
+            <input type="password" id="cfg-xeroClientSecret" placeholder="Leave blank to keep existing">
+          </div>
+        </div>
+        <div class="btn-group">
+          <button class="btn btn-primary" onclick="connectXero()">Connect &amp; Download from Xero</button>
+          <button class="btn btn-secondary" onclick="checkManualFiles()">Check Manual Files</button>
+        </div>
+        <div id="status-xero"></div>
+      </div>
+    </div>
+
+    <!-- STEP 4: Generate -->
+    <div class="card" id="card-generate">
+      <div class="card-header" onclick="toggle('generate')">
+        <div class="step-num">4</div>
+        <h2>Generate Receipts</h2>
+        <span class="chevron" id="chev-generate">&#9660;</span>
+      </div>
+      <div class="card-body" id="body-generate">
+        <p style="font-size:13px;color:#555;margin-top:12px">
+          Generates DOCX receipt files in the <code>out/</code> folder. After generation, convert them to PDF before sending emails.
+        </p>
+        <div class="btn-group">
+          <button class="btn btn-primary" id="btn-generate" onclick="generate()">Generate Receipts</button>
+        </div>
+        <div id="status-generate"></div>
+        <div id="stats-generate"></div>
+        <div id="convert-section" style="display:none">
+          <hr class="divider">
+          <div class="section-title">Convert to PDF</div>
+          <div class="btn-group">
+            <button class="btn btn-secondary" id="btn-convert" onclick="convertPdf()">Convert DOCX to PDF</button>
+          </div>
+          <div id="status-convert"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 5: Results -->
+    <div class="card" id="card-results">
+      <div class="card-header" onclick="toggle('results')">
+        <div class="step-num">5</div>
+        <h2>View Results</h2>
+        <span class="chevron" id="chev-results">&#9660;</span>
+      </div>
+      <div class="card-body" id="body-results">
+        <div class="btn-group" style="margin-top:12px">
+          <button class="btn btn-secondary btn-sm" onclick="loadResults()">Refresh</button>
+        </div>
+        <div id="results-content"><p style="color:#999;font-size:13px;margin-top:12px">No results yet. Run generation first.</p></div>
+      </div>
+    </div>
+
+    <!-- STEP 6: Email -->
+    <div class="card" id="card-email">
+      <div class="card-header" onclick="toggle('email')">
+        <div class="step-num">6</div>
+        <h2>Send Emails</h2>
+        <span class="chevron" id="chev-email">&#9660;</span>
+      </div>
+      <div class="card-body" id="body-email">
+        <p style="font-size:13px;color:#555;margin-top:12px">
+          Emails are sent from the address configured in Step 1. PDFs must exist in <code>out/</code> before sending (convert DOCX &rarr; PDF first).
+        </p>
+        <div class="section-title">Test Email</div>
+        <p class="hint">Sends the first donor's receipt to <em>your own email address</em> so you can verify formatting.</p>
+        <div class="btn-group">
+          <button class="btn btn-secondary" onclick="sendTest()">Send Sample to Myself</button>
+        </div>
+        <div id="status-email-test"></div>
+
+        <hr class="divider">
+        <div class="section-title">Batch Send</div>
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:4px">
+          <label style="margin:0;white-space:nowrap">Batch size:</label>
+          <input type="number" id="batch-size" value="10" min="1" max="200" style="width:80px">
+          <button class="btn btn-primary btn-sm" onclick="sendBatch()">Send Next <span id="batch-label">10</span></button>
+          <button class="btn btn-danger btn-sm" onclick="sendAll()">Send All Remaining</button>
+        </div>
+        <p class="hint">Already-sent donors are skipped automatically. Progress is saved in <code>out/sent.json</code>.</p>
+        <div id="status-email-batch"></div>
+      </div>
+    </div>
+
+  </div><!-- /steps -->
+</div><!-- /container -->
+
+<script>
+// ── Utilities ──────────────────────────────────────────────────────────────
+function setStatus(id, msg, type) {
+  const el = document.getElementById(id);
+  el.className = 'status ' + (type || 'info');
+  el.textContent = msg;
+}
+function clearStatus(id) { document.getElementById(id).textContent = ''; document.getElementById(id).className = ''; }
+
+function toggle(name) {
+  const body = document.getElementById('body-' + name);
+  const chev = document.getElementById('chev-' + name);
+  const open = body.classList.toggle('open');
+  chev.style.transform = open ? '' : 'rotate(-90deg)';
+}
+
+async function api(method, url, body) {
+  const opts = { method, headers: { 'Content-Type': 'application/json' } };
+  if (body) opts.body = JSON.stringify(body);
+  const res = await fetch(url, opts);
+  return res.json();
+}
+
+// ── Load config on page load ───────────────────────────────────────────────
+async function loadConfig() {
+  const data = await api('GET', '/api/config');
+  document.getElementById('cfg-year').value = data.year || new Date().getFullYear();
+  document.getElementById('cfg-email').value = data.email || '';
+  document.getElementById('cfg-clientId').value = data.clientId || '';
+  document.getElementById('cfg-xeroClientId').value = data.xeroClientId || '';
+}
+
+async function saveConfig() {
+  const body = {
+    year: parseInt(document.getElementById('cfg-year').value),
+    email: document.getElementById('cfg-email').value,
+    clientId: document.getElementById('cfg-clientId').value,
+    clientSecret: document.getElementById('cfg-clientSecret').value,
+    refreshToken: document.getElementById('cfg-refreshToken').value,
+    accessToken: document.getElementById('cfg-accessToken').value,
+    xeroClientId: document.getElementById('cfg-xeroClientId').value,
+    xeroClientSecret: document.getElementById('cfg-xeroClientSecret').value,
+  };
+  const res = await api('POST', '/api/config', body);
+  if (res.ok) setStatus('status-config', 'Configuration saved.', 'ok');
+  else setStatus('status-config', res.error || 'Failed to save.', 'err');
+}
+
+// ── Templates ──────────────────────────────────────────────────────────────
+async function loadTemplates() {
+  const [tpls, cfg] = await Promise.all([api('GET', '/api/templates'), api('GET', '/api/config')]);
+  const year = cfg.year || new Date().getFullYear();
+
+  const pg1Sel = document.getElementById('tpl-pg1');
+  const pg2Sel = document.getElementById('tpl-pg2');
+  pg1Sel.innerHTML = tpls.pg1.map(f => `<option value="${f}" ${f === (cfg.templatePg1 || `${year} Giving Receipts.docx`) ? 'selected' : ''}>${f}</option>`).join('');
+  pg2Sel.innerHTML = tpls.pg2.map(f => `<option value="${f}" ${f === (cfg.templatePg2 || `${year} Giving ReceiptsPg2.docx`) ? 'selected' : ''}>${f}</option>`).join('');
+}
+
+async function saveTemplates() {
+  const body = {
+    templatePg1: document.getElementById('tpl-pg1').value,
+    templatePg2: document.getElementById('tpl-pg2').value,
+  };
+  const res = await api('POST', '/api/config', body);
+  if (res.ok) setStatus('status-templates', 'Templates saved.', 'ok');
+  else setStatus('status-templates', res.error || 'Failed.', 'err');
+}
+
+// ── Xero ───────────────────────────────────────────────────────────────────
+async function connectXero() {
+  await saveConfig();
+  // Step 1: get auth URL and open a popup
+  const authRes = await api('GET', '/api/xero/auth-url');
+  if (authRes.error) { setStatus('status-xero', authRes.error, 'err'); return; }
+
+  setStatus('status-xero', 'A Xero authorization window has opened. Authorize the app, then click "Download Files" below.', 'info');
+  const popup = window.open(authRes.url, 'xero-auth', 'width=700,height=600');
+
+  // Listen for the callback page to signal completion
+  window.addEventListener('message', async function handler(e) {
+    if (e.data === 'xero-connected') {
+      window.removeEventListener('message', handler);
+      popup && popup.close();
+      setStatus('status-xero', 'Connected! Downloading files from Xero...', 'info');
+      const res = await api('POST', '/api/xero/connect');
+      if (res.ok) setStatus('status-xero', `Downloaded: ${res.files.join(', ')} (${res.journalLines} journal lines, ${res.emailContacts} email contacts)`, 'ok');
+      else setStatus('status-xero', res.error || 'Download failed.', 'err');
+    }
+  });
+}
+
+async function checkManualFiles() {
+  const res = await api('GET', '/api/xero/check');
+  if (res.ok) setStatus('status-xero', `Files found: ${res.files.join(', ')}`, 'ok');
+  else setStatus('status-xero', res.missing.map(f => `Missing: ${f}`).join(' | '), 'err');
+}
+
+// ── Generate ───────────────────────────────────────────────────────────────
+async function generate() {
+  const btn = document.getElementById('btn-generate');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Generating...';
+  clearStatus('status-generate');
+  document.getElementById('stats-generate').innerHTML = '';
+
+  const res = await api('POST', '/api/generate');
+
+  btn.disabled = false;
+  btn.textContent = 'Generate Receipts';
+
+  if (res.error) {
+    setStatus('status-generate', res.error, 'err');
+    return;
+  }
+
+  setStatus('status-generate', `Done! Generated ${res.donors.length} receipt(s).`, 'ok');
+  renderStats(res.stats, 'stats-generate');
+  loadResults();
+}
+
+function renderStats(stats, containerId) {
+  if (!stats) return;
+  const items = [
+    { val: stats.qualifying, lbl: 'Receipts Generated' },
+    { val: '$' + stats.totalRaised, lbl: 'Total Raised' },
+    { val: '$' + stats.avgDonation, lbl: 'Avg Donation' },
+    { val: stats.avgTransactions, lbl: 'Avg Transactions / Donor' },
+    { val: stats.largest ? stats.largest.name + ' ($' + stats.largest.total + ')' : '—', lbl: 'Largest Giver' },
+    { val: stats.smallest ? stats.smallest.name + ' ($' + stats.smallest.total + ')' : '—', lbl: 'Smallest Giver' },
+    { val: stats.skipped, lbl: 'Below $75 (skipped)' },
+  ];
+  document.getElementById(containerId).innerHTML =
+    '<div class="stats-grid">' +
+    items.map(i => `<div class="stat-box"><div class="val">${i.val}</div><div class="lbl">${i.lbl}</div></div>`).join('') +
+    '</div>';
+}
+
+// ── Results ────────────────────────────────────────────────────────────────
+async function loadResults() {
+  const [res, emailRes, ignoredRes] = await Promise.all([
+    api('GET', '/api/results'),
+    api('GET', '/api/email/list'),
+    api('GET', '/api/email/ignored'),
+  ]);
+  const el = document.getElementById('results-content');
+  if (!res.ready) {
+    el.innerHTML = '<p style="color:#999;font-size:13px;margin-top:12px">No results yet. Run generation first.</p>';
+    return;
+  }
+
+  renderStats(res.stats, 'results-content');
+
+  const emails = emailRes.emails || {};
+  const ignored = ignoredRes.ignored || {};
+
+  const rows = res.donors.map(d => {
+    const isIgnored = !!ignored[d.name];
+    const emailVal = emails[d.name] || '';
+    const emailDisplay = emailVal || '<span style="color:#999">not found</span>';
+    const safeName = d.name.replace(/'/g, "\\'");
+    const safeEmail = emailVal.replace(/'/g, "\\'");
+    const statusBadge = isIgnored
+      ? '<span class="badge badge-ignored">Ignored</span>'
+      : d.sent
+        ? `<span class="badge badge-sent">Sent ${new Date(d.sentAt).toLocaleDateString()}</span>`
+        : '<span class="badge badge-unsent">Unsent</span>';
+    const sendBtn = !isIgnored && !d.sent
+      ? `<button class="btn btn-primary btn-sm" onclick="sendToOne('${safeName}')">Send</button>`
+      : '';
+    const ignoreBtn = isIgnored
+      ? `<button class="btn btn-secondary btn-sm" onclick="toggleIgnore('${safeName}', false)">Unignore</button>`
+      : `<button class="btn btn-secondary btn-sm" onclick="toggleIgnore('${safeName}', true)">Ignore</button>`;
+    return `<tr class="${isIgnored ? 'ignored' : ''}">
+      <td>${d.name}</td>
+      <td>$${parseFloat(d.total).toFixed(2)}</td>
+      <td>${d.transactions}</td>
+      <td id="email-cell-${d.name.replace(/\s+/g,'-')}">
+        <span class="email-display">${emailDisplay}</span>
+        <input class="email-input" type="email" value="${emailVal}" style="display:none;width:180px;padding:3px 6px;font-size:13px;border:1px solid #ccc;border-radius:4px">
+        <button class="btn-icon" title="Edit email" onclick="startEditEmail('${safeName}')">&#9998;</button>
+        <button class="btn-icon btn-icon-ok" title="Save" style="display:none;color:#2c5f2e" onclick="saveEmail('${safeName}')">&#10003;</button>
+        <button class="btn-icon btn-icon-cancel" title="Cancel" style="display:none;color:#c62828" onclick="cancelEditEmail('${safeName}')">&#10005;</button>
+      </td>
+      <td>${statusBadge}</td>
+      <td style="display:flex;gap:6px">${sendBtn}${ignoreBtn}</td>
+    </tr>`;
+  }).join('');
+
+  el.innerHTML += `
+    <table>
+      <thead><tr><th>Donor</th><th>Total</th><th>Transactions</th><th>Email</th><th>Status</th><th></th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+// ── Email address inline edit ───────────────────────────────────────────────
+function emailCellId(name) { return 'email-cell-' + name.replace(/\s+/g, '-'); }
+
+function startEditEmail(name) {
+  const cell = document.getElementById(emailCellId(name));
+  cell.querySelector('.email-display').style.display = 'none';
+  cell.querySelector('.email-input').style.display = 'inline';
+  cell.querySelector('.btn-icon').style.display = 'none';
+  cell.querySelector('.btn-icon-ok').style.display = 'inline';
+  cell.querySelector('.btn-icon-cancel').style.display = 'inline';
+  cell.querySelector('.email-input').focus();
+}
+
+function cancelEditEmail(name) {
+  const cell = document.getElementById(emailCellId(name));
+  cell.querySelector('.email-display').style.display = 'inline';
+  cell.querySelector('.email-input').style.display = 'none';
+  cell.querySelector('.btn-icon').style.display = 'inline';
+  cell.querySelector('.btn-icon-ok').style.display = 'none';
+  cell.querySelector('.btn-icon-cancel').style.display = 'none';
+}
+
+async function saveEmail(name) {
+  const cell = document.getElementById(emailCellId(name));
+  const newEmail = cell.querySelector('.email-input').value.trim();
+  const res = await api('POST', '/api/email/update-address', { name, email: newEmail });
+  if (res.ok) loadResults();
+  else { alert('Failed to save: ' + (res.error || 'Unknown error')); cancelEditEmail(name); }
+}
+
+async function toggleIgnore(name, ignored) {
+  await api('POST', '/api/email/ignore', { name, ignored });
+  loadResults();
+}
+
+// ── Email ──────────────────────────────────────────────────────────────────
+async function sendTest() {
+  setStatus('status-email-test', 'Sending...', 'info');
+  const res = await api('POST', '/api/email/test', {});
+  if (res.ok) setStatus('status-email-test', `Test email sent to ${res.sentTo} (receipt for: ${res.donor})`, 'ok');
+  else setStatus('status-email-test', res.error || 'Failed.', 'err');
+}
+
+async function sendToOne(name) {
+  setStatus('status-email-batch', `Sending to ${name}...`, 'info');
+  const res = await api('POST', '/api/email/send', { donorName: name, batchSize: 1 });
+  if (res.ok) {
+    const r = res.sent[0];
+    if (r && r.ok) { setStatus('status-email-batch', `Sent to ${r.email}`, 'ok'); loadResults(); }
+    else setStatus('status-email-batch', r ? r.error : 'Unknown error', 'err');
+  } else setStatus('status-email-batch', res.error || 'Failed.', 'err');
+}
+
+async function sendBatch() {
+  const n = parseInt(document.getElementById('batch-size').value) || 10;
+  setStatus('status-email-batch', `Sending next ${n}...`, 'info');
+  const res = await api('POST', '/api/email/send', { batchSize: n });
+  if (res.ok) {
+    const ok = res.sent.filter(r => r.ok).length;
+    const errors = res.sent.filter(r => r.error);
+    let msg = `Sent: ${ok} | Errors: ${errors.length}`;
+    if (errors.length) msg += '\n' + errors.map(r => `${r.name}: ${r.error}`).join('\n');
+    setStatus('status-email-batch', msg, ok > 0 && !errors.length ? 'ok' : 'err');
+    loadResults();
+  } else setStatus('status-email-batch', res.error || 'Failed.', 'err');
+}
+
+async function sendAll() {
+  if (!confirm('Send to ALL remaining unsent donors? This cannot be undone.')) return;
+  setStatus('status-email-batch', 'Sending to all...', 'info');
+  const res = await api('POST', '/api/email/send', { batchSize: 9999 });
+  if (res.ok) {
+    const ok = res.sent.filter(r => r.ok).length;
+    const fail = res.sent.filter(r => r.error).length;
+    setStatus('status-email-batch', `Sent: ${ok} | Errors: ${fail}`, ok > 0 ? 'ok' : 'err');
+    loadResults();
+  } else setStatus('status-email-batch', res.error || 'Failed.', 'err');
+}
+
+// Update batch label on input
+document.getElementById('batch-size').addEventListener('input', function() {
+  document.getElementById('batch-label').textContent = this.value || '10';
+});
+
+// ── Convert to PDF ─────────────────────────────────────────────────────────
+async function convertPdf() {
+  const btn = document.getElementById('btn-convert');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Converting...';
+  setStatus('status-convert', 'Running LibreOffice...', 'info');
+
+  const res = await api('POST', '/api/convert');
+
+  btn.disabled = false;
+  btn.textContent = 'Convert DOCX to PDF';
+
+  if (res.ok) setStatus('status-convert', `Converted ${res.converted} file(s) to PDF.`, 'ok');
+  else setStatus('status-convert', res.error || 'Conversion failed.', 'err');
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+(async function init() {
+  await loadConfig();
+  await loadTemplates();
+  await loadResults();
+  const cv = await api('GET', '/api/convert/available');
+  if (cv.available) document.getElementById('convert-section').style.display = '';
+})();
+</script>
+</body>
+</html>
