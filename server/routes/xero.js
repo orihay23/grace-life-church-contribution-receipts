@@ -42,7 +42,8 @@ router.post('/connect', async (req, res) => {
     try {
         const year = config.get('year') || new Date().getFullYear();
         const result = await downloadAccountsAndContacts(year);
-        const emailResult = await downloadEmailList(year);
+        // Pass the already-fetched contacts list to avoid a second getContacts API call
+        const emailResult = await downloadEmailList(year, result.contacts);
         res.json({
             ok: true,
             files: [
@@ -50,7 +51,7 @@ router.post('/connect', async (req, res) => {
                 path.basename(result.contactsPath),
                 path.basename(emailResult.emailListPath),
             ],
-            journalLines: result.journalLines,
+            txnLines: result.txnLines,
             emailContacts: emailResult.count,
         });
     } catch (err) {

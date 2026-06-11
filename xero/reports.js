@@ -1,23 +1,28 @@
 /**
  * Xero report downloads.
  *
- * Reconstructs the two CSV files the app needs from Xero API data:
+ * Builds the three CSV files the app needs from Xero API data:
  *
- *  accounts.csv  — built from Journal lines filtered to the given year,
- *                  matching the "Detailed Account Transaction Report" shape:
- *                  code, account, Date, Type, Transaction, Reference, Gross, Name
+ *  accounts.csv        — one row per line item on a RECEIVE bank transaction,
+ *                        matching the shape readTransactions.js expects:
+ *                        code, account, Date, Type, Transaction, Reference, Gross, Name
  *
- *  contacts{year}.csv — built from aggregating journal lines per contact:
- *                  name, amount (total for year)
+ *  contacts{year}.csv  — aggregated total per contact name for the year:
+ *                        name, amount
  *
- *  emailList{year}.csv — built from the Contacts API:
- *                  name, email
+ *  emailList{year}.csv — contact list with email addresses:
+ *                        name, email
  *
  * Notes:
- *  - Xero Journals API paginates at 100 records; we fetch all pages.
- *  - Journal lines don't always carry a contact name; we cross-reference
- *    with the Contacts API using ContactID where available.
- *  - The caller should catch and surface errors.
+ *  - Uses the Bank Transactions API (accounting.banktransactions.read scope),
+ *    which works under Xero's granular scopes available to all apps created
+ *    on or after 2 March 2026. The previous Journals approach required a
+ *    premium scope that is no longer available to new apps.
+ *  - Donations must be entered as Receive Money / bank transactions in Xero,
+ *    coded to income account codes.
+ *  - Pagination: Bank Transactions uses page-based pagination (100/page).
+ *  - getContacts is called once and shared between downloadAccountsAndContacts
+ *    and downloadEmailList to avoid a redundant API round-trip.
  */
 
 const fs = require('fs');
@@ -46,9 +51,19 @@ function writeCsv(filePath, headers, rows) {
     fs.writeFileSync(filePath, lines.join('\n'));
 }
 
+function formatDate(xeroDate) {
+    if (!xeroDate) return '';
+    // Xero returns dates as "/Date(ms)/" or ISO strings depending on SDK version
+    if (typeof xeroDate === 'string' && xeroDate.startsWith('/Date(')) {
+        const ms = parseInt(xeroDate.replace(/\/Date\((\d+)[^)]*\)\//, '$1'));
+        return new Date(ms).toISOString().split('T')[0];
+    }
+    return new Date(xeroDate).toISOString().split('T')[0];
+}
+
 /**
- * Fetch all journals for the year from Xero and write accounts.csv.
- * Returns an array of { name, total } objects for building contacts CSV.
+ * Fetch all RECEIVE bank transactions for the year and write accounts.csv +
+ * contacts{year}.csv. Returns the contacts list so downloadEmailList can reuse it.
  */
 async function downloadAccountsAndContacts(year) {
     ensureInputDir();
@@ -58,64 +73,57 @@ async function downloadAccountsAndContacts(year) {
     const tenantId = cfg.xeroTenantId;
     if (!tenantId) throw new Error('No Xero tenant found. Reconnect via "Connect & Download from Xero".');
 
-    // Date range for the year
-    const fromDate = `${year}-01-01`;
-    const toDate = `${year}-12-31`;
-
-    // Fetch contacts map (id → name) for cross-referencing
-    const contactsResp = await client.accountingApi.getContacts(tenantId);
-    const contactMap = {};
-    for (const c of (contactsResp.body?.contacts || [])) {
-        if (c.contactID && c.name) {
-            contactMap[c.contactID] = { name: c.name, email: c.emailAddress || '' };
-        }
+    // Fetch account code → name map for populating the 'account' column
+    const accountsResp = await client.accountingApi.getAccounts(tenantId);
+    const accountMap = {};
+    for (const a of (accountsResp.body?.accounts || [])) {
+        if (a.code) accountMap[a.code] = a.name || '';
     }
 
-    // Fetch all journal pages
-    let offset = 0;
-    const allJournalLines = [];
+    // Fetch all contacts once — reused by downloadEmailList
+    const contactsResp = await client.accountingApi.getContacts(tenantId);
+    const allContacts = contactsResp.body?.contacts || [];
+
+    // Page through RECEIVE bank transactions for the year.
+    // Xero date filter uses its own DateTime() syntax in the where clause.
+    const nextYear = parseInt(year) + 1;
+    const where = `Type=="RECEIVE"&&Date>=DateTime(${year},01,01)&&Date<DateTime(${nextYear},01,01)`;
+
+    let page = 1;
+    const allLines = [];
 
     while (true) {
-        const resp = await client.accountingApi.getJournals(
+        const resp = await client.accountingApi.getBankTransactions(
             tenantId,
             undefined, // ifModifiedSince
-            offset,
+            where,
+            undefined, // order
+            page,
         );
-        const journals = resp.body?.journals || [];
-        if (!journals.length) break;
+        const txns = resp.body?.bankTransactions || [];
+        if (!txns.length) break;
 
-        for (const journal of journals) {
-            const journalDate = journal.journalDate ? new Date(journal.journalDate) : null;
-            if (!journalDate) continue;
-            if (journalDate.getFullYear() !== parseInt(year)) continue;
+        for (const txn of txns) {
+            const dateStr = formatDate(txn.date);
+            const contactName = txn.contact?.name || '';
+            const reference = txn.reference || '';
 
-            const dateStr = journalDate.toISOString().split('T')[0];
-
-            for (const line of (journal.journalLines || [])) {
-                // Resolve contact name
-                let contactName = '';
-                if (line.contactID && contactMap[line.contactID]) {
-                    contactName = contactMap[line.contactID].name;
-                } else if (line.description) {
-                    // Some orgs embed the name in the description
-                    contactName = line.description;
-                }
-
-                allJournalLines.push({
+            for (const line of (txn.lineItems || [])) {
+                allLines.push({
                     code: line.accountCode || '',
-                    account: line.accountName || '',
+                    account: accountMap[line.accountCode] || '',
                     Date: dateStr,
-                    Type: journal.sourceType || '',
+                    Type: 'RECEIVE',
                     Transaction: line.description || '',
-                    Reference: journal.reference || '',
-                    Gross: line.grossAmount != null ? line.grossAmount : (line.netAmount || ''),
+                    Reference: reference,
+                    Gross: line.lineAmount != null ? line.lineAmount : '',
                     Name: contactName,
                 });
             }
         }
 
-        if (journals.length < 100) break;
-        offset += journals.length;
+        if (txns.length < 100) break;
+        page += 1;
     }
 
     // Write accounts.csv
@@ -123,12 +131,12 @@ async function downloadAccountsAndContacts(year) {
     writeCsv(
         accountsPath,
         ['code', 'account', 'Date', 'Type', 'Transaction', 'Reference', 'Gross', 'Name'],
-        allJournalLines.map((l) => [l.code, l.account, l.Date, l.Type, l.Transaction, l.Reference, l.Gross, l.Name])
+        allLines.map((l) => [l.code, l.account, l.Date, l.Type, l.Transaction, l.Reference, l.Gross, l.Name])
     );
 
     // Build contacts{year}.csv by aggregating Gross per contact name
     const totalsMap = {};
-    for (const line of allJournalLines) {
+    for (const line of allLines) {
         if (!line.Name) continue;
         if (!totalsMap[line.Name]) totalsMap[line.Name] = 0;
         totalsMap[line.Name] += parseFloat(line.Gross) || 0;
@@ -138,24 +146,29 @@ async function downloadAccountsAndContacts(year) {
     const contactRows = Object.entries(totalsMap).map(([name, amount]) => [name, amount.toFixed(2)]);
     writeCsv(contactsPath, ['name', 'amount'], contactRows);
 
-    return { accountsPath, contactsPath, journalLines: allJournalLines.length };
+    return { accountsPath, contactsPath, txnLines: allLines.length, contacts: allContacts };
 }
 
 /**
- * Download the contact list with emails and write emailList{year}.csv.
+ * Write emailList{year}.csv from a contacts list.
+ * Accepts the contacts array returned by downloadAccountsAndContacts to avoid
+ * a second getContacts API call when both are run together.
  */
-async function downloadEmailList(year) {
+async function downloadEmailList(year, contacts) {
     ensureInputDir();
 
-    const client = await getClient();
-    const cfg = config.all();
-    const tenantId = cfg.xeroTenantId;
-    if (!tenantId) throw new Error('No Xero tenant found.');
+    let contactList = contacts;
+    if (!contactList) {
+        // Standalone call — fetch contacts ourselves
+        const client = await getClient();
+        const cfg = config.all();
+        const tenantId = cfg.xeroTenantId;
+        if (!tenantId) throw new Error('No Xero tenant found.');
+        const resp = await client.accountingApi.getContacts(tenantId);
+        contactList = resp.body?.contacts || [];
+    }
 
-    const resp = await client.accountingApi.getContacts(tenantId);
-    const contacts = resp.body?.contacts || [];
-
-    const rows = contacts
+    const rows = contactList
         .filter((c) => c.name && c.emailAddress)
         .map((c) => [c.name, c.emailAddress]);
 
